@@ -2,9 +2,10 @@
   "id": "farbmeister-sheet",
   "title": "Farbmeister Character Sheet",
   "description": "Ein regelwerkunabhängiger Charakterbogen für das Farbmeister-PnP.",
-  "version": "0.1.0",
+  "version": "1.0.0",
   
   "manifest": "https://github.com/ShiraoriAskiras/farbmeister-sheet/releases/latest/download/module.json",
+  "download": "https://github.com/ShiraoriAskiras/farbmeister-sheet/releases/download/1.0.0/module.zip",
 
   "compatibility": {
     "minimum": "13",
