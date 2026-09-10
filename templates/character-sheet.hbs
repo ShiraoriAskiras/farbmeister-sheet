@@ -5,8 +5,6 @@
 
   <div class="farbmeister-left">
 
-
-    {{!-- NAME --}}
     <section class="farbmeister-box name-box">
 
       <label>
@@ -22,8 +20,6 @@
     </section>
 
 
-
-    {{!-- CHARAKTERDATEN --}}
     <section class="farbmeister-box character-box">
 
       <label class="big-label">
@@ -87,7 +83,6 @@
               class="resource-circle {{#if filled}}filled{{/if}}"
               data-action="set-mana"
               data-value="{{value}}"
-              title="Farbtropfen auf {{value}} setzen"
             ></button>
 
           {{/each}}
@@ -102,7 +97,6 @@
 
 
 
-  {{!-- RECHTE SEITE KOMMT IM NÄCHSTEN SCHRITT --}}
   <div class="farbmeister-right">
 
     <section class="color-header">
@@ -126,12 +120,65 @@
     </section>
 
 
-    <section class="farbmeister-placeholder">
+    <section class="ability-box">
 
-      <p>
-        Angriff, Verteidigung und Unterstützung
-        kommen im nächsten Schritt.
-      </p>
+      {{#each abilities}}
+
+        <div class="ability">
+
+          <div class="ability-header">
+
+            <button
+              type="button"
+              class="ability-roll"
+              data-action="roll-ability"
+              data-ability="{{key}}"
+              title="{{name}} würfeln"
+            >
+              {{label}}:
+            </button>
+
+
+            <div class="ability-circles">
+
+              {{#each circles}}
+
+                <button
+                  type="button"
+                  class="ability-circle {{#if filled}}filled{{/if}}"
+                  data-action="set-ability"
+                  data-ability="{{../key}}"
+                  data-value="{{value}}"
+                ></button>
+
+              {{/each}}
+
+            </div>
+
+          </div>
+
+
+          <div class="ability-description">
+
+            <button
+              type="button"
+              class="ability-name"
+              data-action="roll-ability"
+              data-ability="{{key}}"
+              title="{{name}} würfeln"
+            >
+              {{name}}
+            </button>
+
+            <span>
+              - {{description}}
+            </span>
+
+          </div>
+
+        </div>
+
+      {{/each}}
 
     </section>
 
