@@ -1,0 +1,140 @@
+<div
+  class="farbmeister-sheet-body"
+  style="--farbmeister-accent: {{selectedColor.accent}};"
+>
+
+  <div class="farbmeister-left">
+
+
+    {{!-- NAME --}}
+    <section class="farbmeister-box name-box">
+
+      <label>
+        Dein Name:
+      </label>
+
+      <input
+        type="text"
+        value="{{actorName}}"
+        data-action="change-name"
+      >
+
+    </section>
+
+
+
+    {{!-- CHARAKTERDATEN --}}
+    <section class="farbmeister-box character-box">
+
+      <label class="big-label">
+        Du bist Farbmeister der Farbe:
+      </label>
+
+
+      <select data-action="change-color">
+
+        {{#each colors}}
+
+          <option
+            value="{{key}}"
+            {{#if selected}}selected{{/if}}
+          >
+            {{icon}} {{label}}
+          </option>
+
+        {{/each}}
+
+      </select>
+
+
+      <div class="resource-row hp-row">
+
+        <label>
+          Dein Leben:
+        </label>
+
+        <div class="hp-control">
+
+          <input
+            type="number"
+            min="0"
+            max="25"
+            value="{{character.hp}}"
+            data-action="change-hp"
+          >
+
+          <span>
+            / 25
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="resource-row mana-row">
+
+        <label>
+          Farbtropfen:
+        </label>
+
+        <div class="circle-container">
+
+          {{#each manaCircles}}
+
+            <button
+              type="button"
+              class="resource-circle {{#if filled}}filled{{/if}}"
+              data-action="set-mana"
+              data-value="{{value}}"
+              title="Farbtropfen auf {{value}} setzen"
+            ></button>
+
+          {{/each}}
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+
+  {{!-- RECHTE SEITE KOMMT IM NÄCHSTEN SCHRITT --}}
+  <div class="farbmeister-right">
+
+    <section class="color-header">
+
+      <div class="color-icon">
+        {{selectedColor.icon}}
+      </div>
+
+      <div>
+
+        <div class="color-title">
+          Die Farbe {{selectedColor.label}}
+        </div>
+
+        <div class="magic-title">
+          {{selectedColor.magic}}
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="farbmeister-placeholder">
+
+      <p>
+        Angriff, Verteidigung und Unterstützung
+        kommen im nächsten Schritt.
+      </p>
+
+    </section>
+
+  </div>
+
+</div>

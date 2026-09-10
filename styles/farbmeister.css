@@ -1,0 +1,281 @@
+.farbmeister-actor-sheet .window-content {
+  padding: 0;
+}
+
+
+/* ----------------------------------------- */
+/* HAUPTLAYOUT                               */
+/* ----------------------------------------- */
+
+.farbmeister-sheet-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+
+  width: 100%;
+  min-height: 100%;
+
+  padding: 30px;
+
+  box-sizing: border-box;
+
+  background:
+    linear-gradient(
+      110deg,
+      rgba(90, 190, 230, 0.28),
+      rgba(150, 210, 80, 0.20),
+      rgba(255, 210, 50, 0.25),
+      rgba(255, 110, 40, 0.22),
+      rgba(80, 180, 230, 0.22)
+    );
+}
+
+
+.farbmeister-left,
+.farbmeister-right {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+
+/* ----------------------------------------- */
+/* BOXEN                                     */
+/* ----------------------------------------- */
+
+.farbmeister-box,
+.color-header,
+.farbmeister-placeholder {
+  background: rgba(255, 255, 255, 0.94);
+
+  border-radius: 18px;
+
+  color: #111;
+}
+
+
+.farbmeister-box {
+  padding: 25px;
+}
+
+
+/* ----------------------------------------- */
+/* NAME                                      */
+/* ----------------------------------------- */
+
+.name-box {
+  text-align: center;
+}
+
+
+.name-box label {
+  display: block;
+
+  font-size: 32px;
+  font-weight: 600;
+
+  margin-bottom: 14px;
+}
+
+
+.name-box input {
+  width: 80%;
+
+  font-size: 26px;
+
+  text-align: center;
+
+  color: #111;
+  background: transparent;
+
+  border: none;
+  border-bottom: 2px solid #222;
+
+  border-radius: 0;
+}
+
+
+/* ----------------------------------------- */
+/* CHARAKTER                                 */
+/* ----------------------------------------- */
+
+.character-box {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+}
+
+
+.big-label {
+  font-size: 26px;
+  font-weight: 600;
+
+  margin-bottom: 25px;
+}
+
+
+.character-box select {
+  width: 80%;
+
+  margin: 0 auto 55px auto;
+
+  font-size: 22px;
+
+  color: #111;
+  background: white;
+}
+
+
+/* ----------------------------------------- */
+/* RESSOURCEN                                */
+/* ----------------------------------------- */
+
+.resource-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 45px;
+}
+
+
+.resource-row label {
+  font-size: 27px;
+  font-weight: 600;
+}
+
+
+.hp-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 26px;
+}
+
+
+.hp-control input {
+  width: 75px;
+
+  text-align: center;
+
+  font-size: 25px;
+
+  color: #111;
+
+  background: transparent;
+
+  border: none;
+  border-bottom: 2px solid #222;
+
+  border-radius: 0;
+}
+
+
+/* Chrome/Edge Number Buttons entfernen */
+.hp-control input::-webkit-outer-spin-button,
+.hp-control input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+/* ----------------------------------------- */
+/* KREISE                                    */
+/* ----------------------------------------- */
+
+.circle-container {
+  display: flex;
+  gap: 7px;
+}
+
+
+.resource-circle {
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+
+  border-radius: 50%;
+
+  border: 2px solid #777;
+
+  background: white;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.1s ease,
+    background 0.1s ease;
+}
+
+
+.resource-circle:hover {
+  transform: scale(1.15);
+}
+
+
+.resource-circle.filled {
+  background: var(--farbmeister-accent);
+
+  border-color: var(--farbmeister-accent);
+}
+
+
+/* ----------------------------------------- */
+/* FARBHEADER                                */
+/* ----------------------------------------- */
+
+.color-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 20px;
+
+  min-height: 120px;
+
+  padding: 15px 25px;
+
+  border: 4px solid var(--farbmeister-accent);
+}
+
+
+.color-icon {
+  font-size: 55px;
+}
+
+
+.color-title {
+  font-size: 31px;
+  font-weight: 600;
+
+  text-align: center;
+}
+
+
+.magic-title {
+  margin-top: 4px;
+
+  font-size: 28px;
+
+  text-align: center;
+}
+
+
+/* ----------------------------------------- */
+/* RECHTE BOX                                */
+/* ----------------------------------------- */
+
+.farbmeister-placeholder {
+  flex: 1;
+
+  padding: 30px;
+
+  border: 4px solid var(--farbmeister-accent);
+
+  font-size: 20px;
+
+  text-align: center;
+}
