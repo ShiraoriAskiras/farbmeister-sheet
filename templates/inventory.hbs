@@ -4,183 +4,236 @@
   style="--farbmeister-accent: {{selectedColor.accent}};"
 >
 
-  <section class="inventory-panel">
-
-    <header class="inventory-header">
-
-      <div>
-
-        <h2>
-          Inventar
-        </h2>
-
-        <p>
-          Gegenstände von {{actorName}}
-        </p>
-
-      </div>
+  <section class="inventory-slot-panel">
 
 
-      <button
-        type="button"
-        class="add-item-button"
-        data-action="add-inventory-item"
-      >
-        <i class="fas fa-plus"></i>
-        Gegenstand
-      </button>
+    {{!-- =================================================== --}}
+    {{!-- HOSENTASCHE                                        --}}
+    {{!-- =================================================== --}}
 
-    </header>
+    <section class="inventory-container-section">
 
+      <header class="inventory-container-header">
 
+        <div class="inventory-container-title">
 
-    <div class="inventory-list">
+          <span class="inventory-container-icon">
+            
+          </span>
 
-      {{#each inventory}}
+          <span>
+            Hosentasche
+          </span>
 
-        <article
-          class="inventory-item"
-          data-item-id="{{id}}"
-        >
+        </div>
 
+        <span class="inventory-capacity">
+          {{pocketCount}} / 2
+        </span>
 
-          {{!-- BILD --}}
-          <button
-            type="button"
-            class="inventory-image-button"
-            data-action="pick-inventory-image"
-            data-item-id="{{id}}"
-            title="Bild ändern"
-          >
-
-            <img
-              src="{{img}}"
-              alt="{{name}}"
-            >
-
-          </button>
+      </header>
 
 
+      <div class="inventory-slot-grid pocket-grid">
 
-          {{!-- DATEN --}}
-          <div class="inventory-item-data">
+        {{#each pocketSlots}}
+
+          <div class="inventory-slot-wrapper">
 
 
-            <div class="inventory-item-top">
+            {{#if occupied}}
 
-              <input
-                class="inventory-item-name"
-                type="text"
-                value="{{name}}"
-                data-action="update-inventory-item"
-                data-item-id="{{id}}"
-                data-field="name"
+              <button
+                type="button"
+                class="inventory-slot occupied"
+                data-action="edit-slot-item"
+                data-item-id="{{item.id}}"
+                title="{{item.name}} bearbeiten"
               >
 
+                <img
+                  src="{{item.img}}"
+                  alt="{{item.name}}"
+                >
 
-              <div class="inventory-quantity">
+                <div class="inventory-slot-name">
+                  {{item.name}}
+                </div>
 
-                <span>
-                  Menge
-                </span>
+                <div class="inventory-slot-quantity">
+                  ×{{item.quantity}}
+                </div>
 
+              </button>
+
+
+              <div class="inventory-slot-actions">
 
                 <button
                   type="button"
-                  data-action="change-item-quantity"
-                  data-item-id="{{id}}"
-                  data-amount="-1"
+                  data-action="post-inventory-item"
+                  data-item-id="{{item.id}}"
+                  title="Im Chat zeigen"
                 >
-                  −
+                  <i class="fas fa-comment"></i>
                 </button>
 
-
-                <input
-                  type="number"
-                  min="0"
-                  value="{{quantity}}"
-                  data-action="update-inventory-item"
-                  data-item-id="{{id}}"
-                  data-field="quantity"
-                >
-
-
                 <button
                   type="button"
-                  data-action="change-item-quantity"
-                  data-item-id="{{id}}"
-                  data-amount="1"
+                  class="inventory-delete-button"
+                  data-action="delete-inventory-item"
+                  data-item-id="{{item.id}}"
+                  title="Gegenstand löschen"
                 >
-                  +
+                  <i class="fas fa-trash"></i>
                 </button>
 
               </div>
 
-            </div>
 
+            {{else}}
 
-            <textarea
-              class="inventory-description"
-              placeholder="Beschreibung des Gegenstands..."
-              data-action="update-inventory-item"
-              data-item-id="{{id}}"
-              data-field="description"
-            >{{description}}</textarea>
+              <button
+                type="button"
+                class="inventory-slot empty"
+                data-action="add-slot-item"
+                data-container="{{container}}"
+                data-slot="{{slot}}"
+                title="Gegenstand hinzufügen"
+              >
 
-          </div>
+                <i class="fas fa-plus"></i>
 
+                <span>
+                  Hinzufügen
+                </span>
 
+              </button>
 
-          {{!-- BUTTONS --}}
-          <div class="inventory-item-actions">
-
-            <button
-              type="button"
-              data-action="post-inventory-item"
-              data-item-id="{{id}}"
-              title="Im Chat zeigen"
-            >
-              <i class="fas fa-comment"></i>
-            </button>
-
-
-            <button
-              type="button"
-              class="delete-item"
-              data-action="delete-inventory-item"
-              data-item-id="{{id}}"
-              title="Gegenstand löschen"
-            >
-              <i class="fas fa-trash"></i>
-            </button>
+            {{/if}}
 
           </div>
 
+        {{/each}}
 
-        </article>
+      </div>
 
-      {{else}}
+    </section>
 
-        <div class="inventory-empty">
 
-          <i class="fas fa-bag-shopping"></i>
 
-          <p>
-            Das Inventar ist noch leer.
-          </p>
+    {{!-- =================================================== --}}
+    {{!-- RUCKSACK                                            --}}
+    {{!-- =================================================== --}}
 
-          <button
-            type="button"
-            data-action="add-inventory-item"
-          >
-            Ersten Gegenstand hinzufügen
-          </button>
+    <section class="inventory-container-section backpack-section">
+
+      <header class="inventory-container-header">
+
+        <div class="inventory-container-title">
+
+          <span class="inventory-container-icon">
+            
+          </span>
+
+          <span>
+            Rucksack
+          </span>
 
         </div>
 
-      {{/each}}
+        <span class="inventory-capacity">
+          {{backpackCount}} / 3
+        </span>
 
-    </div>
+      </header>
+
+
+      <div class="inventory-slot-grid backpack-grid">
+
+        {{#each backpackSlots}}
+
+          <div class="inventory-slot-wrapper">
+
+
+            {{#if occupied}}
+
+              <button
+                type="button"
+                class="inventory-slot occupied"
+                data-action="edit-slot-item"
+                data-item-id="{{item.id}}"
+                title="{{item.name}} bearbeiten"
+              >
+
+                <img
+                  src="{{item.img}}"
+                  alt="{{item.name}}"
+                >
+
+                <div class="inventory-slot-name">
+                  {{item.name}}
+                </div>
+
+                <div class="inventory-slot-quantity">
+                  ×{{item.quantity}}
+                </div>
+
+              </button>
+
+
+              <div class="inventory-slot-actions">
+
+                <button
+                  type="button"
+                  data-action="post-inventory-item"
+                  data-item-id="{{item.id}}"
+                  title="Im Chat zeigen"
+                >
+                  <i class="fas fa-comment"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="inventory-delete-button"
+                  data-action="delete-inventory-item"
+                  data-item-id="{{item.id}}"
+                  title="Gegenstand löschen"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+
+              </div>
+
+
+            {{else}}
+
+              <button
+                type="button"
+                class="inventory-slot empty"
+                data-action="add-slot-item"
+                data-container="{{container}}"
+                data-slot="{{slot}}"
+                title="Gegenstand hinzufügen"
+              >
+
+                <i class="fas fa-plus"></i>
+
+                <span>
+                  Hinzufügen
+                </span>
+
+              </button>
+
+            {{/if}}
+
+          </div>
+
+        {{/each}}
+
+      </div>
+
+    </section>
 
   </section>
 

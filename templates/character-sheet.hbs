@@ -11,7 +11,8 @@
       data-action="switch-tab"
       data-tab="character"
     >
-      Charakter
+      <i class="fas fa-user"></i>
+      Info
     </button>
 
     <button
@@ -20,6 +21,7 @@
       data-action="switch-tab"
       data-tab="inventory"
     >
+      <i class="fas fa-backpack"></i>
       Inventar
     </button>
 
@@ -33,152 +35,103 @@
 
     <div class="farbmeister-sheet-body">
 
-  <div class="farbmeister-left">
 
-    <section class="farbmeister-box name-box">
+      {{!-- ================================================= --}}
+      {{!-- LINKE SEITE                                       --}}
+      {{!-- ================================================= --}}
 
-      <label>
-        Dein Name:
-      </label>
-
-      <input
-        type="text"
-        value="{{actorName}}"
-        data-action="change-name"
-      >
-
-    </section>
+      <div class="farbmeister-left">
 
 
-    <section class="farbmeister-box character-box">
+        {{!-- NAME --}}
+        <section class="farbmeister-box name-box">
 
-      <label class="big-label">
-        Du bist Farbmeister der Farbe:
-      </label>
-
-
-      <select data-action="change-color">
-
-        {{#each colors}}
-
-          <option
-            value="{{key}}"
-            {{#if selected}}selected{{/if}}
-          >
-            {{icon}} {{label}}
-          </option>
-
-        {{/each}}
-
-      </select>
-
-
-      <div class="resource-row hp-row">
-
-        <label>
-          Dein Leben:
-        </label>
-
-        <div class="hp-control">
+          <label>
+            Dein Name:
+          </label>
 
           <input
-            type="number"
-            min="0"
-            max="25"
-            value="{{character.hp}}"
-            data-action="change-hp"
+            type="text"
+            value="{{actorName}}"
+            data-action="change-name"
           >
 
-          <span>
-            / 25
-          </span>
-
-        </div>
-
-      </div>
+        </section>
 
 
-      <div class="resource-row mana-row">
+        {{!-- CHARAKTERDATEN --}}
+        <section class="farbmeister-box character-box">
 
-        <label>
-          Farbtropfen:
-        </label>
-
-        <div class="circle-container">
-
-          {{#each manaCircles}}
-
-            <button
-              type="button"
-              class="resource-circle {{#if filled}}filled{{/if}}"
-              data-action="set-mana"
-              data-value="{{value}}"
-            ></button>
-
-          {{/each}}
-
-        </div>
-
-      </div>
-
-    </section>
-
-  </div>
+          <label class="big-label">
+            Du bist Farbmeister der Farbe:
+          </label>
 
 
+          <select
+            data-action="change-color"
+          >
 
-  <div class="farbmeister-right">
+            {{#each colors}}
 
-    <section class="color-header">
+              <option
+                value="{{key}}"
+                {{#if selected}}selected{{/if}}
+              >
+                {{icon}} {{label}}
+              </option>
 
-      <div class="color-icon">
-        {{selectedColor.icon}}
-      </div>
+            {{/each}}
 
-      <div>
-
-        <div class="color-title">
-          Die Farbe {{selectedColor.label}}
-        </div>
-
-        <div class="magic-title">
-          {{selectedColor.magic}}
-        </div>
-
-      </div>
-
-    </section>
+          </select>
 
 
-    <section class="ability-box">
+          {{!-- LEBEN --}}
+          <div
+            class="resource-row hp-row"
+          >
 
-      {{#each abilities}}
+            <label>
+              Dein Leben:
+            </label>
 
-        <div class="ability">
+            <div class="hp-control">
 
-          <div class="ability-header">
+              <input
+                type="number"
+                min="0"
+                max="25"
+                value="{{character.hp}}"
+                data-action="change-hp"
+              >
 
-            <button
-              type="button"
-              class="ability-roll"
-              data-action="roll-ability"
-              data-ability="{{key}}"
-              title="{{name}} würfeln"
-            >
-              {{label}}:
-            </button>
+              <span>
+                / 25
+              </span>
+
+            </div>
+
+          </div>
 
 
-            <div class="ability-circles">
+          {{!-- FARBTROPFEN --}}
+          <div
+            class="resource-row mana-row"
+          >
 
-              {{#each circles}}
+            <label>
+              Farbtropfen:
+            </label>
+
+            <div class="circle-container">
+
+              {{#each manaCircles}}
 
                 <button
                   type="button"
-                  class="ability-circle {{#if filled}}filled{{/if}}"
-                  data-action="set-ability"
-                  data-ability="{{../key}}"
+                  class="resource-circle {{#if filled}}filled{{/if}}"
+                  data-action="set-mana"
                   data-value="{{value}}"
+                  title="Farbtropfen: {{value}}"
                 ></button>
 
               {{/each}}
@@ -187,30 +140,108 @@
 
           </div>
 
+        </section>
 
-          <div class="ability-description">
+      </div>
 
-            <button
-              type="button"
-              class="ability-name"
-              data-action="roll-ability"
-              data-ability="{{key}}"
-              title="{{name}} würfeln"
-            >
-              {{name}}
-            </button>
 
-            <span>
-              - {{description}}
-            </span>
+
+      {{!-- ================================================= --}}
+      {{!-- RECHTE SEITE                                      --}}
+      {{!-- ================================================= --}}
+
+      <div class="farbmeister-right">
+
+
+        {{!-- FARBHEADER --}}
+        <section class="color-header">
+
+          <div class="color-icon">
+            {{selectedColor.icon}}
+          </div>
+
+          <div>
+
+            <div class="color-title">
+              Die Farbe {{selectedColor.label}}
+            </div>
+
+            <div class="magic-title">
+              {{selectedColor.magic}}
+            </div>
 
           </div>
 
-        </div>
+        </section>
 
-      {{/each}}
 
-    </section>
+        {{!-- FÄHIGKEITEN --}}
+        <section class="ability-box">
+
+          {{#each abilities}}
+
+            <div class="ability">
+
+
+              <div class="ability-header">
+
+                <button
+                  type="button"
+                  class="ability-roll"
+                  data-action="roll-ability"
+                  data-ability="{{key}}"
+                  title="{{name}} würfeln"
+                >
+                  {{label}}:
+                </button>
+
+
+                <div class="ability-circles">
+
+                  {{#each circles}}
+
+                    <button
+                      type="button"
+                      class="ability-circle {{#if filled}}filled{{/if}}"
+                      data-action="set-ability"
+                      data-ability="{{../key}}"
+                      data-value="{{value}}"
+                    ></button>
+
+                  {{/each}}
+
+                </div>
+
+              </div>
+
+
+              <div class="ability-description">
+
+                <button
+                  type="button"
+                  class="ability-name"
+                  data-action="roll-ability"
+                  data-ability="{{key}}"
+                  title="{{name}} würfeln"
+                >
+                  {{name}}
+                </button>
+
+                <span>
+                  - {{description}}
+                </span>
+
+              </div>
+
+            </div>
+
+          {{/each}}
+
+        </section>
+
+      </div>
+
+    </div>
 
   </div>
 

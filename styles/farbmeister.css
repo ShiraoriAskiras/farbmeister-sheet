@@ -1,413 +1,22 @@
+/* ========================================================= */
+/* FENSTER                                                   */
+/* ========================================================= */
+
 .farbmeister-actor-sheet .window-content {
   padding: 0;
-}
-
-
-/* ----------------------------------------- */
-/* HAUPTLAYOUT                               */
-/* ----------------------------------------- */
-
-.farbmeister-sheet-body {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-
-  width: 100%;
-  min-height: 100%;
-
-  padding: 30px;
-
-  box-sizing: border-box;
+  overflow: auto;
 
   background:
     linear-gradient(
       110deg,
-      rgba(90, 190, 230, 0.28),
-      rgba(150, 210, 80, 0.20),
-      rgba(255, 210, 50, 0.25),
-      rgba(255, 110, 40, 0.22),
-      rgba(80, 180, 230, 0.22)
+      rgba(80, 180, 220, 0.30),
+      rgba(130, 190, 80, 0.22),
+      rgba(255, 220, 50, 0.24),
+      rgba(245, 100, 40, 0.24),
+      rgba(80, 170, 220, 0.24)
     );
 }
 
-
-.farbmeister-left,
-.farbmeister-right {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-
-
-/* ----------------------------------------- */
-/* BOXEN                                     */
-/* ----------------------------------------- */
-
-.farbmeister-box,
-.color-header,
-.farbmeister-placeholder {
-  background: rgba(255, 255, 255, 0.94);
-
-  border-radius: 18px;
-
-  color: #111;
-}
-
-
-.farbmeister-box {
-  padding: 25px;
-}
-
-
-/* ----------------------------------------- */
-/* NAME                                      */
-/* ----------------------------------------- */
-
-.name-box {
-  text-align: center;
-}
-
-
-.name-box label {
-  display: block;
-
-  font-size: 32px;
-  font-weight: 600;
-
-  margin-bottom: 14px;
-}
-
-
-.name-box input {
-  width: 80%;
-
-  font-size: 26px;
-
-  text-align: center;
-
-  color: #111;
-  background: transparent;
-
-  border: none;
-  border-bottom: 2px solid #222;
-
-  border-radius: 0;
-}
-
-
-/* ----------------------------------------- */
-/* CHARAKTER                                 */
-/* ----------------------------------------- */
-
-.character-box {
-  flex: 1;
-
-  display: flex;
-  flex-direction: column;
-}
-
-
-.big-label {
-  font-size: 26px;
-  font-weight: 600;
-
-  margin-bottom: 25px;
-}
-
-
-.character-box select {
-  width: 80%;
-
-  margin: 0 auto 55px auto;
-
-  font-size: 22px;
-
-  color: #111;
-  background: white;
-}
-
-
-/* ----------------------------------------- */
-/* RESSOURCEN                                */
-/* ----------------------------------------- */
-
-.resource-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  margin-top: 45px;
-}
-
-
-.resource-row label {
-  font-size: 27px;
-  font-weight: 600;
-}
-
-
-.hp-control {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  font-size: 26px;
-}
-
-
-.hp-control input {
-  width: 75px;
-
-  text-align: center;
-
-  font-size: 25px;
-
-  color: #111;
-
-  background: transparent;
-
-  border: none;
-  border-bottom: 2px solid #222;
-
-  border-radius: 0;
-}
-
-
-/* Chrome/Edge Number Buttons entfernen */
-.hp-control input::-webkit-outer-spin-button,
-.hp-control input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-
-/* ----------------------------------------- */
-/* KREISE                                    */
-/* ----------------------------------------- */
-
-.circle-container {
-  display: flex;
-  gap: 7px;
-}
-
-
-.resource-circle {
-  width: 28px;
-  height: 28px;
-
-  padding: 0;
-
-  border-radius: 50%;
-
-  border: 2px solid #777;
-
-  background: white;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.1s ease,
-    background 0.1s ease;
-}
-
-
-.resource-circle:hover {
-  transform: scale(1.15);
-}
-
-
-.resource-circle.filled {
-  background: var(--farbmeister-accent);
-
-  border-color: var(--farbmeister-accent);
-}
-
-
-/* ----------------------------------------- */
-/* FARBHEADER                                */
-/* ----------------------------------------- */
-
-.color-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  gap: 20px;
-
-  min-height: 120px;
-
-  padding: 15px 25px;
-
-  border: 4px solid var(--farbmeister-accent);
-}
-
-
-.color-icon {
-  font-size: 55px;
-}
-
-
-.color-title {
-  font-size: 31px;
-  font-weight: 600;
-
-  text-align: center;
-}
-
-
-.magic-title {
-  margin-top: 4px;
-
-  font-size: 28px;
-
-  text-align: center;
-}
-
-
-/* ----------------------------------------- */
-/* FÄHIGKEITEN                               */
-/* ----------------------------------------- */
-
-.ability-box {
-  flex: 1;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-
-  padding: 22px 28px;
-
-  color: #111;
-  background: rgba(255, 255, 255, 0.94);
-
-  border:
-    4px solid
-    var(--farbmeister-accent);
-
-  border-radius: 18px;
-}
-
-
-.ability {
-  padding: 10px 0;
-}
-
-
-.ability-header {
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  margin-bottom: 7px;
-}
-
-
-.ability-roll {
-  width: auto;
-
-  padding: 0;
-
-  color: #111;
-  background: transparent;
-
-  border: none;
-
-  font-size: 25px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  box-shadow: none;
-}
-
-
-.ability-roll:hover {
-  color: var(--farbmeister-accent);
-
-  text-shadow: none;
-
-  box-shadow: none;
-}
-
-
-.ability-circles {
-  display: flex;
-
-  gap: 7px;
-}
-
-
-.ability-circle {
-  width: 27px;
-  height: 27px;
-
-  padding: 0;
-
-  border:
-    2px solid #777;
-
-  border-radius: 50%;
-
-  background: white;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.1s ease,
-    background 0.1s ease;
-}
-
-
-.ability-circle:hover {
-  transform: scale(1.15);
-}
-
-
-.ability-circle.filled {
-  background:
-    var(--farbmeister-accent);
-
-  border-color:
-    var(--farbmeister-accent);
-}
-
-
-.ability-description {
-  color: #111;
-
-  font-size: 19px;
-  line-height: 1.35;
-}
-
-
-.ability-name {
-  width: auto;
-
-  padding: 0;
-
-  color: #111;
-  background: transparent;
-
-  border: none;
-
-  font: inherit;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  box-shadow: none;
-}
-
-
-.ability-name:hover {
-  color:
-    var(--farbmeister-accent);
-
-  text-shadow: none;
-
-  box-shadow: none;
-}
 
 /* ========================================================= */
 /* TABS                                                      */
@@ -421,32 +30,43 @@
 .farbmeister-tabs {
   display: flex;
 
-  gap: 6px;
+  gap: 5px;
 
-  padding: 12px 30px 0 30px;
+  padding:
+    14px 30px 0 30px;
 }
 
 
 .farbmeister-tab-button {
   width: auto;
 
-  padding: 8px 24px;
+  min-width: 150px;
+
+  padding:
+    9px 25px;
 
   color: #eee;
 
   background:
-    rgba(0, 0, 0, 0.35);
+    rgba(0, 0, 0, 0.42);
 
   border:
     2px solid transparent;
 
   border-radius:
-    10px 10px 0 0;
+    12px 12px 0 0;
 
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
 
   cursor: pointer;
+
+  box-shadow: none;
+}
+
+
+.farbmeister-tab-button i {
+  margin-right: 7px;
 }
 
 
@@ -479,6 +99,448 @@
 }
 
 
+/* ========================================================= */
+/* CHARAKTER LAYOUT                                          */
+/* ========================================================= */
+
+.farbmeister-sheet-body {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 40px;
+
+  width: 100%;
+
+  min-height: 680px;
+
+  padding: 30px;
+
+  box-sizing: border-box;
+}
+
+
+.farbmeister-left,
+.farbmeister-right {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 28px;
+}
+
+
+/* ========================================================= */
+/* BOXEN                                                     */
+/* ========================================================= */
+
+.farbmeister-box,
+.color-header,
+.ability-box {
+  color: #111;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.94
+    );
+
+  border-radius: 18px;
+}
+
+
+.farbmeister-box {
+  padding: 25px;
+}
+
+
+/* ========================================================= */
+/* NAME                                                      */
+/* ========================================================= */
+
+.name-box {
+  text-align: center;
+}
+
+
+.name-box label {
+  display: block;
+
+  margin-bottom: 14px;
+
+  font-size: 32px;
+  font-weight: 600;
+}
+
+
+.name-box input {
+  width: 80%;
+
+  color: #111;
+
+  background: transparent;
+
+  border: none;
+
+  border-bottom:
+    2px solid #222;
+
+  border-radius: 0;
+
+  font-size: 26px;
+
+  text-align: center;
+}
+
+
+/* ========================================================= */
+/* CHARAKTERDATEN                                            */
+/* ========================================================= */
+
+.character-box {
+  flex: 1;
+
+  display: flex;
+
+  flex-direction: column;
+}
+
+
+.big-label {
+  margin-bottom: 25px;
+
+  font-size: 26px;
+  font-weight: 600;
+}
+
+
+.character-box select {
+  width: 80%;
+
+  margin:
+    0 auto 55px auto;
+
+  color: #111;
+
+  background: white;
+
+  font-size: 22px;
+}
+
+
+/* ========================================================= */
+/* RESSOURCEN                                                */
+/* ========================================================= */
+
+.resource-row {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-top: 45px;
+}
+
+
+.resource-row label {
+  font-size: 27px;
+  font-weight: 600;
+}
+
+
+.hp-control {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  font-size: 26px;
+}
+
+
+.hp-control input {
+  width: 75px;
+
+  color: #111;
+
+  background: transparent;
+
+  border: none;
+
+  border-bottom:
+    2px solid #222;
+
+  border-radius: 0;
+
+  font-size: 25px;
+
+  text-align: center;
+}
+
+
+.hp-control input::-webkit-outer-spin-button,
+.hp-control input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+
+  margin: 0;
+}
+
+
+/* ========================================================= */
+/* FARBTROPFEN                                               */
+/* ========================================================= */
+
+.circle-container {
+  display: flex;
+
+  gap: 7px;
+}
+
+
+.resource-circle {
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+
+  background: white;
+
+  border:
+    2px solid #777;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.1s ease,
+    background 0.1s ease;
+
+  box-shadow: none;
+}
+
+
+.resource-circle:hover {
+  transform: scale(1.15);
+
+  box-shadow: none;
+}
+
+
+.resource-circle.filled {
+  background:
+    var(--farbmeister-accent);
+
+  border-color:
+    var(--farbmeister-accent);
+}
+
+
+/* ========================================================= */
+/* FARBHEADER                                                */
+/* ========================================================= */
+
+.color-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 20px;
+
+  min-height: 120px;
+
+  padding:
+    15px 25px;
+
+  border:
+    4px solid
+    var(--farbmeister-accent);
+}
+
+
+.color-icon {
+  font-size: 55px;
+}
+
+
+.color-title {
+  font-size: 31px;
+  font-weight: 600;
+
+  text-align: center;
+}
+
+
+.magic-title {
+  margin-top: 4px;
+
+  font-size: 28px;
+
+  text-align: center;
+}
+
+
+/* ========================================================= */
+/* FÄHIGKEITEN                                               */
+/* ========================================================= */
+
+.ability-box {
+  flex: 1;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: space-around;
+
+  padding:
+    22px 28px;
+
+  border:
+    4px solid
+    var(--farbmeister-accent);
+}
+
+
+.ability {
+  padding:
+    10px 0;
+}
+
+
+.ability-header {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 7px;
+}
+
+
+.ability-roll {
+  width: auto;
+
+  padding: 0;
+
+  color: #111;
+
+  background: transparent;
+
+  border: none;
+
+  font-size: 25px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow: none;
+}
+
+
+.ability-roll:hover {
+  color:
+    var(--farbmeister-accent);
+
+  text-shadow: none;
+
+  box-shadow: none;
+}
+
+
+.ability-circles {
+  display: flex;
+
+  gap: 7px;
+}
+
+
+.ability-circle {
+  width: 27px;
+  height: 27px;
+
+  padding: 0;
+
+  background: white;
+
+  border:
+    2px solid #777;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.1s ease,
+    background 0.1s ease;
+
+  box-shadow: none;
+}
+
+
+.ability-circle:hover {
+  transform: scale(1.15);
+
+  box-shadow: none;
+}
+
+
+.ability-circle.filled {
+  background:
+    var(--farbmeister-accent);
+
+  border-color:
+    var(--farbmeister-accent);
+}
+
+
+.ability-description {
+  color: #111;
+
+  font-size: 19px;
+
+  line-height: 1.35;
+}
+
+
+.ability-name {
+  width: auto;
+
+  padding: 0;
+
+  color: #111;
+
+  background: transparent;
+
+  border: none;
+
+  font: inherit;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow: none;
+}
+
+
+.ability-name:hover {
+  color:
+    var(--farbmeister-accent);
+
+  text-shadow: none;
+
+  box-shadow: none;
+}
+
 
 /* ========================================================= */
 /* INVENTAR                                                  */
@@ -491,304 +553,505 @@
 }
 
 
-.inventory-panel {
-  min-height: 600px;
+.inventory-slot-panel {
+  min-height: 620px;
 
-  padding: 25px;
+  padding:
+    30px 38px;
 
   background:
-    rgba(255, 255, 255, 0.94);
+    rgba(
+      255,
+      255,
+      255,
+      0.95
+    );
 
   border:
     4px solid
     var(--farbmeister-accent);
 
   border-radius: 18px;
+
+  box-sizing: border-box;
 }
 
 
-.inventory-header {
+/* ========================================================= */
+/* INVENTAR-BEREICHE                                         */
+/* ========================================================= */
+
+.inventory-container-section {
+  margin-bottom: 55px;
+}
+
+
+.inventory-container-section:last-child {
+  margin-bottom: 0;
+}
+
+
+.inventory-container-header {
   display: flex;
 
   align-items: center;
+
   justify-content: space-between;
 
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 
-  padding-bottom: 15px;
+  padding-bottom: 8px;
 
   border-bottom:
     2px solid
-    var(--farbmeister-accent);
+    rgba(
+      0,
+      0,
+      0,
+      0.16
+    );
 }
 
 
-.inventory-header h2 {
-  margin: 0;
+.inventory-container-title {
+  display: flex;
 
-  color: #111;
+  align-items: center;
 
-  font-size: 30px;
+  gap: 10px;
+
+  font-size: 28px;
+  font-weight: 700;
 }
 
 
-.inventory-header p {
-  margin:
-    4px 0 0 0;
-
-  color: #666;
+.inventory-container-icon {
+  font-size: 32px;
 }
 
 
-.add-item-button {
-  width: auto;
-
+.inventory-capacity {
   padding:
-    8px 16px;
+    4px 12px;
 
   color: white;
 
   background:
     var(--farbmeister-accent);
 
-  border: none;
+  border-radius: 12px;
 
-  border-radius: 8px;
-
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 
+/* ========================================================= */
+/* SLOT-GRIDS                                                */
+/* ========================================================= */
 
-/* LISTE */
+.inventory-slot-grid {
+  display: grid;
 
-.inventory-list {
+  justify-content: start;
+
+  gap: 24px;
+}
+
+
+.pocket-grid {
+  grid-template-columns:
+    repeat(
+      2,
+      180px
+    );
+}
+
+
+.backpack-grid {
+  grid-template-columns:
+    repeat(
+      3,
+      180px
+    );
+}
+
+
+/* ========================================================= */
+/* SLOT                                                      */
+/* ========================================================= */
+
+.inventory-slot-wrapper {
+  position: relative;
+
+  width: 180px;
+  height: 180px;
+}
+
+
+.inventory-slot {
+  width: 100%;
+  height: 100%;
+
+  padding: 10px;
+
+  overflow: hidden;
+
+  color: #111;
+
+  background:
+    rgba(
+      245,
+      245,
+      245,
+      0.98
+    );
+
+  border:
+    3px solid
+    rgba(
+      0,
+      0,
+      0,
+      0.20
+    );
+
+  border-radius: 18px;
+
+  cursor: pointer;
+
+  box-shadow: none;
+
+  transition:
+    transform 0.12s ease,
+    border-color 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+
+.inventory-slot:hover {
+  transform:
+    translateY(-2px);
+
+  border-color:
+    var(--farbmeister-accent);
+
+  box-shadow:
+    0 4px 12px
+    rgba(
+      0,
+      0,
+      0,
+      0.18
+    );
+}
+
+
+/* ========================================================= */
+/* LEERER SLOT                                               */
+/* ========================================================= */
+
+.inventory-slot.empty {
   display: flex;
 
   flex-direction: column;
 
-  gap: 12px;
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  color:
+    rgba(
+      0,
+      0,
+      0,
+      0.50
+    );
+
+  border-style: dashed;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.55
+    );
 }
 
 
+.inventory-slot.empty i {
+  font-size: 40px;
+}
 
-/* EIN GEGENSTAND */
 
-.inventory-item {
-  display: grid;
+.inventory-slot.empty span {
+  font-size: 15px;
+  font-weight: 600;
+}
 
-  grid-template-columns:
-    80px 1fr auto;
 
-  gap: 16px;
+/* ========================================================= */
+/* BELEGTER SLOT                                             */
+/* ========================================================= */
 
-  align-items: stretch;
+.inventory-slot.occupied {
+  display: flex;
 
-  padding: 14px;
+  flex-direction: column;
 
-  background:
-    rgba(240, 240, 240, 0.95);
+  align-items: center;
+
+  justify-content: flex-start;
+}
+
+
+.inventory-slot.occupied img {
+  width: 100px;
+  height: 100px;
+
+  margin-bottom: 8px;
+
+  object-fit: cover;
 
   border:
     2px solid
-    rgba(0, 0, 0, 0.12);
+    var(--farbmeister-accent);
 
   border-radius: 12px;
 }
 
 
-.inventory-item:hover {
-  border-color:
-    var(--farbmeister-accent);
-}
-
-
-
-/* BILD */
-
-.inventory-image-button {
-  width: 80px;
-  height: 80px;
-
-  padding: 0;
+.inventory-slot-name {
+  width: 100%;
 
   overflow: hidden;
 
-  background: #ddd;
-
-  border:
-    2px solid
-    var(--farbmeister-accent);
-
-  border-radius: 10px;
-
-  box-shadow: none;
-}
-
-
-.inventory-image-button img {
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-
-  border: none;
-}
-
-
-
-/* DATEN */
-
-.inventory-item-data {
-  min-width: 0;
-}
-
-
-.inventory-item-top {
-  display: flex;
-
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 20px;
-
-  margin-bottom: 8px;
-}
-
-
-.inventory-item-name {
-  flex: 1;
-
-  height: 34px;
-
   color: #111;
 
-  background: white;
+  font-size: 16px;
+  font-weight: 700;
 
-  font-size: 19px;
+  text-align: center;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+.inventory-slot-quantity {
+  margin-top: 3px;
+
+  color:
+    var(--farbmeister-accent);
+
+  font-size: 15px;
   font-weight: 700;
 }
 
 
+/* ========================================================= */
+/* SLOT-AKTIONEN                                             */
+/* ========================================================= */
 
-/* MENGE */
+.inventory-slot-actions {
+  position: absolute;
 
-.inventory-quantity {
+  top: 7px;
+  right: 7px;
+
+  display: flex;
+
+  gap: 4px;
+}
+
+
+.inventory-slot-actions button {
   display: flex;
 
   align-items: center;
 
-  gap: 5px;
-}
+  justify-content: center;
 
-
-.inventory-quantity span {
-  margin-right: 3px;
-
-  font-weight: 600;
-}
-
-
-.inventory-quantity button {
   width: 30px;
   height: 30px;
 
   padding: 0;
 
-  color: #111;
+  color: #222;
 
-  background: white;
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.92
+    );
+
+  border:
+    1px solid
+    rgba(
+      0,
+      0,
+      0,
+      0.25
+    );
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  box-shadow: none;
 }
 
 
-.inventory-quantity input {
-  width: 48px;
-  height: 30px;
+.inventory-slot-actions button:hover {
+  color:
+    var(--farbmeister-accent);
 
-  color: #111;
+  border-color:
+    var(--farbmeister-accent);
 
-  background: white;
-
-  text-align: center;
+  box-shadow: none;
 }
 
 
+.inventory-slot-actions
+.inventory-delete-button:hover {
+  color: #c51c1c;
 
-/* BESCHREIBUNG */
-
-.inventory-description {
-  width: 100%;
-  min-height: 55px;
-
-  resize: vertical;
-
-  color: #111;
-
-  background: white;
-
-  line-height: 1.3;
+  border-color: #c51c1c;
 }
 
 
+/* ========================================================= */
+/* ITEM-DIALOG                                               */
+/* ========================================================= */
 
-/* AKTIONEN */
-
-.inventory-item-actions {
+.farbmeister-item-dialog {
   display: flex;
 
   flex-direction: column;
 
-  justify-content: center;
+  gap: 16px;
 
-  gap: 8px;
+  padding: 5px;
 }
 
 
-.inventory-item-actions button {
-  width: 36px;
-  height: 36px;
+.farbmeister-item-dialog
+.item-dialog-location {
+  padding:
+    7px 10px;
 
-  padding: 0;
-}
+  opacity: 0.75;
 
+  border-bottom:
+    1px solid
+    rgba(
+      128,
+      128,
+      128,
+      0.35
+    );
 
-.inventory-item-actions .delete-item:hover {
-  color: #c00;
-
-  border-color: #c00;
-}
-
-
-
-/* LEERES INVENTAR */
-
-.inventory-empty {
-  padding: 80px 20px;
-
-  color: #777;
+  font-weight: 600;
 
   text-align: center;
 }
 
 
-.inventory-empty > i {
-  display: block;
+.farbmeister-item-dialog
+.item-dialog-image-row {
+  display: grid;
 
-  margin-bottom: 15px;
+  grid-template-columns:
+    90px 1fr;
 
-  font-size: 50px;
+  align-items: center;
+
+  gap: 15px;
 }
 
 
-.inventory-empty p {
-  font-size: 20px;
+.farbmeister-item-dialog
+.item-dialog-preview {
+  width: 90px;
+  height: 90px;
+
+  object-fit: cover;
+
+  border-radius: 10px;
 }
 
 
-.inventory-empty button {
-  width: auto;
+.farbmeister-item-dialog
+.item-dialog-image-controls {
+  display: flex;
 
-  margin-top: 10px;
+  flex-direction: column;
 
-  padding: 8px 18px;
+  gap: 5px;
+}
+
+
+.farbmeister-item-dialog
+.item-dialog-image-input {
+  display: flex;
+
+  gap: 5px;
+}
+
+
+.farbmeister-item-dialog
+.item-dialog-image-input input {
+  flex: 1;
+}
+
+
+.farbmeister-item-dialog
+.item-dialog-image-input button {
+  width: 40px;
+
+  flex: 0 0 40px;
+}
+
+
+.farbmeister-item-dialog
+.form-group {
+  display: grid;
+
+  grid-template-columns:
+    100px 1fr;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+.farbmeister-item-dialog
+.form-group.stacked {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: stretch;
+
+  gap: 5px;
+}
+
+
+.farbmeister-item-dialog
+.form-group label {
+  font-weight: 600;
+}
+
+
+.farbmeister-item-dialog
+textarea {
+  resize: vertical;
 }
