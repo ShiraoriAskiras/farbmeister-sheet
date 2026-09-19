@@ -4,7 +4,7 @@ import {
 } from "./config.js";
 
 
-const { HandlebarsApplicationMixin, DialogV2 } =
+const { HandlebarsApplicationMixin } =
   foundry.applications.api;
 
 const { ActorSheetV2 } =
@@ -41,6 +41,42 @@ export class FarbmeisterActorSheet
 
     window: {
       resizable: true
+    },
+
+    actions: {
+
+      "switch-tab":
+        this._actionSwitchTab,
+
+      "set-mana":
+        this._actionSetMana,
+
+      "set-ability":
+        this._actionSetAbility,
+
+      "roll-ability":
+        this._actionRollAbility,
+
+      "open-inventory-item":
+        this._actionOpenInventoryItem,
+
+      "quantity-minus":
+        this._actionQuantityMinus,
+
+      "quantity-plus":
+        this._actionQuantityPlus,
+
+      "post-inventory-item":
+        this._actionPostInventoryItem,
+
+      "remove-inventory-item":
+        this._actionRemoveInventoryItem
+    },
+
+    form: {
+      closeOnSubmit: false,
+      submitOnChange: true,
+      handler: this._handleForm
     }
   };
 
@@ -59,6 +95,11 @@ export class FarbmeisterActorSheet
     inventory: {
       template:
         "modules/farbmeister-sheet/templates/inventory.hbs"
+    },
+
+    notes: {
+      template:
+        "modules/farbmeister-sheet/templates/notes.hbs"
     }
   };
 
@@ -84,17 +125,66 @@ export class FarbmeisterActorSheet
       savedData.abilities ?? {};
 
 
-    /*
-     * Vorhandenes Inventar normalisieren.
-     *
-     * Alte Testgegenstände aus der vorherigen
-     * Inventarversion werden automatisch auf
-     * die ersten freien Slots verteilt.
-     */
     const inventory =
       this._normalizeInventory(
         savedData.inventory
       );
+
+
+    /*
+     * Originale Foundry-Items auflösen.
+     */
+    await Promise.all(
+
+      inventory.map(
+        async entry => {
+
+          entry.sourceAvailable =
+            false;
+
+
+          if (!entry.itemUuid) {
+            return;
+          }
+
+
+          try {
+
+            const item =
+              await fromUuid(
+                entry.itemUuid
+              );
+
+
+            if (
+              item &&
+              item.documentName === "Item"
+            ) {
+
+              entry.name =
+                item.name ??
+                entry.name;
+
+              entry.img =
+                item.img ??
+                entry.img;
+
+              entry.sourceAvailable =
+                true;
+            }
+
+          }
+          catch (error) {
+
+            console.warn(
+              "Farbmeister Sheet | Item konnte nicht geladen werden:",
+              entry.itemUuid,
+              error
+            );
+          }
+        }
+      )
+    );
 
 
     const character = {
@@ -124,12 +214,26 @@ export class FarbmeisterActorSheet
         support:
           savedAbilities.support ??
           FARBMISTER_DEFAULTS.abilities.support
-      }
+      },
+
+      /*
+       * NEU:
+       * Zwei voneinander getrennte Notizfelder.
+       */
+      inventoryNotes:
+        savedData.inventoryNotes ??
+        "",
+
+      notes:
+        savedData.notes ??
+        ""
     };
 
 
     const selectedColor =
-      FARBMISTER_COLORS[character.color] ??
+      FARBMISTER_COLORS[
+        character.color
+      ] ??
       FARBMISTER_COLORS.red;
 
 
@@ -167,7 +271,9 @@ export class FarbmeisterActorSheet
         ([key, ability]) => {
 
           const value =
-            character.abilities[key] ?? 0;
+            character.abilities[key] ??
+            0;
+
 
           return {
 
@@ -194,12 +300,6 @@ export class FarbmeisterActorSheet
       );
 
 
-    /*
-     * Inventar-Slots.
-     *
-     * Hosentasche = 2
-     * Rucksack     = 3
-     */
     const pocketSlots =
       this._createInventorySlots(
         "pocket",
@@ -264,243 +364,6 @@ export class FarbmeisterActorSheet
 
 
   /* ========================================================= */
-  /* KREISE                                                    */
-  /* ========================================================= */
-
-  _createCircles(max, current) {
-
-    return Array.from(
-      {
-        length: max
-      },
-
-      (_, index) => ({
-
-        value:
-          index + 1,
-
-        filled:
-          index < current
-      })
-    );
-  }
-
-
-  /* ========================================================= */
-  /* INVENTAR NORMALISIEREN                                    */
-  /* ========================================================= */
-
-  _normalizeInventory(rawInventory) {
-
-    if (
-      !Array.isArray(rawInventory)
-    ) {
-      return [];
-    }
-
-
-    const validSlots = [
-
-      {
-        container: "pocket",
-        slot: 0
-      },
-
-      {
-        container: "pocket",
-        slot: 1
-      },
-
-      {
-        container: "backpack",
-        slot: 0
-      },
-
-      {
-        container: "backpack",
-        slot: 1
-      },
-
-      {
-        container: "backpack",
-        slot: 2
-      }
-    ];
-
-
-    const used =
-      new Set();
-
-
-    const result =
-      [];
-
-
-    for (
-      let index = 0;
-      index < rawInventory.length;
-      index++
-    ) {
-
-      const oldItem =
-        rawInventory[index];
-
-
-      /*
-       * Es gibt insgesamt maximal fünf Slots.
-       */
-      if (
-        result.length >= 5
-      ) {
-        break;
-      }
-
-
-      let container =
-        oldItem.container;
-
-
-      let slot =
-        Number(
-          oldItem.slot
-        );
-
-
-      let slotKey =
-        `${container}:${slot}`;
-
-
-      const validExistingPosition =
-        validSlots.some(
-          position =>
-            position.container === container &&
-            position.slot === slot
-        ) &&
-        !used.has(slotKey);
-
-
-      /*
-       * Alte Items ohne Position werden
-       * automatisch in den nächsten freien
-       * Slot gelegt.
-       */
-      if (
-        !validExistingPosition
-      ) {
-
-        const freePosition =
-          validSlots.find(
-            position =>
-              !used.has(
-                `${position.container}:${position.slot}`
-              )
-          );
-
-
-        if (!freePosition) {
-          break;
-        }
-
-
-        container =
-          freePosition.container;
-
-        slot =
-          freePosition.slot;
-
-        slotKey =
-          `${container}:${slot}`;
-      }
-
-
-      used.add(
-        slotKey
-      );
-
-
-      result.push({
-
-        id:
-          oldItem.id ??
-          `legacy-${index}`,
-
-        container,
-
-        slot,
-
-        name:
-          oldItem.name ??
-          "Gegenstand",
-
-        quantity:
-          Math.max(
-            1,
-            Number(
-              oldItem.quantity ?? 1
-            )
-          ),
-
-        description:
-          oldItem.description ??
-          "",
-
-        img:
-          oldItem.img ??
-          "icons/svg/item-bag.svg"
-      });
-    }
-
-
-    return result;
-  }
-
-
-  /* ========================================================= */
-  /* SLOT-DATEN                                                */
-  /* ========================================================= */
-
-  _createInventorySlots(
-    container,
-    count,
-    inventory
-  ) {
-
-    return Array.from(
-      {
-        length: count
-      },
-
-      (_, slot) => {
-
-        const item =
-          inventory.find(
-            entry =>
-              entry.container === container &&
-              entry.slot === slot
-          );
-
-
-        return {
-
-          container,
-
-          slot,
-
-          slotNumber:
-            slot + 1,
-
-          occupied:
-            Boolean(item),
-
-          item:
-            item ?? null
-        };
-      }
-    );
-  }
-
-
-  /* ========================================================= */
   /* RENDER                                                    */
   /* ========================================================= */
 
@@ -515,6 +378,11 @@ export class FarbmeisterActorSheet
     );
 
 
+    this._activateTab(
+      this._activeTab
+    );
+
+
     const root =
       this.element;
 
@@ -524,305 +392,18 @@ export class FarbmeisterActorSheet
     }
 
 
-    this._activateTab(
-      this._activeTab
-    );
-
-
-    /* ======================================================= */
-    /* CLICK EVENTS                                            */
-    /* ======================================================= */
-
-    root.addEventListener(
-      "click",
+    /*
+     * Rechtsklick auf Mana/Fähigkeitskreise.
+     */
+    root.oncontextmenu =
       async event => {
 
         const target =
-          event.target.closest(
-            "[data-action]"
-          );
-
-
-        if (
-          !target ||
-          !root.contains(target)
-        ) {
-          return;
-        }
-
-
-        const action =
-          target.dataset.action;
-
-
-        switch (action) {
-
-
-          /* ------------------------------------------------- */
-          /* TABS                                              */
-          /* ------------------------------------------------- */
-
-          case "switch-tab": {
-
-            const tab =
-              target.dataset.tab;
-
-            this._activateTab(
-              tab
-            );
-
-            break;
-          }
-
-
-          /* ------------------------------------------------- */
-          /* MANA                                              */
-          /* ------------------------------------------------- */
-
-          case "set-mana": {
-
-            const mana =
-              Number(
-                target.dataset.value
-              );
-
-
-            await this._updateCharacterData({
-              mana
-            });
-
-            break;
-          }
-
-
-          /* ------------------------------------------------- */
-          /* FÄHIGKEITSKREISE                                  */
-          /* ------------------------------------------------- */
-
-          case "set-ability": {
-
-            const ability =
-              target.dataset.ability;
-
-
-            const value =
-              Number(
-                target.dataset.value
-              );
-
-
-            await this._setAbility(
-              ability,
-              value
-            );
-
-            break;
-          }
-
-
-          /* ------------------------------------------------- */
-          /* WÜRFELN                                          */
-          /* ------------------------------------------------- */
-
-          case "roll-ability": {
-
-            const ability =
-              target.dataset.ability;
-
-
-            await this._rollAbility(
-              ability
-            );
-
-            break;
-          }
-
-
-          /* ------------------------------------------------- */
-          /* LEERER INVENTARSLOT                               */
-          /* ------------------------------------------------- */
-
-          case "add-slot-item": {
-
-            const container =
-              target.dataset.container;
-
-
-            const slot =
-              Number(
-                target.dataset.slot
-              );
-
-
-            await this._openInventoryItemDialog({
-              container,
-              slot
-            });
-
-            break;
-          }
-
-
-          /* ------------------------------------------------- */
-          /* BELEGTEN SLOT BEARBEITEN                          */
-          /* ------------------------------------------------- */
-
-          case "edit-slot-item": {
-
-            const itemId =
-              target.dataset.itemId;
-
-
-            await this._openInventoryItemDialog({
-              itemId
-            });
-
-            break;
-          }
-
-
-          /* ------------------------------------------------- */
-          /* ITEM IN CHAT                                      */
-          /* ------------------------------------------------- */
-
-          case "post-inventory-item": {
-
-            event.stopPropagation();
-
-
-            const itemId =
-              target.dataset.itemId;
-
-
-            await this._postInventoryItemToChat(
-              itemId
-            );
-
-            break;
-          }
-
-
-          /* ------------------------------------------------- */
-          /* ITEM LÖSCHEN                                      */
-          /* ------------------------------------------------- */
-
-          case "delete-inventory-item": {
-
-            event.stopPropagation();
-
-
-            const itemId =
-              target.dataset.itemId;
-
-
-            await this._confirmDeleteInventoryItem(
-              itemId
-            );
-
-            break;
-          }
-        }
-      }
-    );
-
-
-    /* ======================================================= */
-    /* CHANGE EVENTS                                           */
-    /* ======================================================= */
-
-    root.addEventListener(
-      "change",
-      async event => {
-
-        const target =
-          event.target;
-
-
-        const action =
-          target.dataset.action;
-
-
-        switch (action) {
-
-
-          case "change-name": {
-
-            const name =
-              target.value.trim();
-
-
-            if (!name) {
-              return;
-            }
-
-
-            await this.actor.update({
-              name
-            });
-
-            break;
-          }
-
-
-          case "change-color": {
-
-            await this._updateCharacterData({
-              color:
-                target.value
-            });
-
-            break;
-          }
-
-
-          case "change-hp": {
-
-            let hp =
-              Number(
-                target.value
-              );
-
-
-            if (
-              Number.isNaN(hp)
-            ) {
-              hp = 0;
-            }
-
-
-            hp =
-              Math.max(
-                0,
-                Math.min(
-                  25,
-                  hp
-                )
-              );
-
-
-            await this._updateCharacterData({
-              hp
-            });
-
-            break;
-          }
-        }
-      }
-    );
-
-
-    /* ======================================================= */
-    /* RECHTSKLICK AUF KREISE                                  */
-    /* ======================================================= */
-
-    root.addEventListener(
-      "contextmenu",
-      async event => {
-
-        const target =
-          event.target.closest(
-            "[data-action]"
-          );
+          event.target instanceof Element
+            ? event.target.closest(
+                "[data-action]"
+              )
+            : null;
 
 
         if (!target) {
@@ -848,12 +429,16 @@ export class FarbmeisterActorSheet
 
 
           await this._updateCharacterData({
+
             mana:
               Math.max(
                 0,
                 value - 1
               )
           });
+
+
+          return;
         }
 
 
@@ -882,7 +467,279 @@ export class FarbmeisterActorSheet
             )
           );
         }
+      };
+  }
+
+
+  /* ========================================================= */
+  /* FORMULAR                                                  */
+  /* ========================================================= */
+
+  static async _handleForm(
+    event,
+    form,
+    formData
+  ) {
+
+    const target =
+      event.target;
+
+
+    /*
+     * ACTOR NAME
+     */
+    if (
+      target?.name ===
+      "actorName"
+    ) {
+
+      const name =
+        String(
+          target.value ?? ""
+        ).trim();
+
+
+      if (name) {
+
+        await this.actor.update({
+          name
+        });
       }
+
+
+      return;
+    }
+
+
+    /*
+     * FARBE
+     */
+    if (
+      target?.name ===
+      "color"
+    ) {
+
+      await this._updateCharacterData({
+
+        color:
+          target.value
+      });
+
+
+      return;
+    }
+
+
+    /*
+     * LEBEN
+     */
+    if (
+      target?.name ===
+      "hp"
+    ) {
+
+      let hp =
+        Number(
+          target.value
+        );
+
+
+      if (
+        Number.isNaN(hp)
+      ) {
+
+        hp = 0;
+      }
+
+
+      hp =
+        Math.max(
+          0,
+          Math.min(
+            25,
+            hp
+          )
+        );
+
+
+      await this._updateCharacterData({
+        hp
+      });
+
+
+      return;
+    }
+
+
+    /*
+     * INVENTARNOTIZEN
+     */
+    if (
+      target?.name ===
+      "inventoryNotes"
+    ) {
+
+      await this._updateCharacterData({
+
+        inventoryNotes:
+          target.value
+      });
+
+
+      return;
+    }
+
+
+    /*
+     * ALLGEMEINE NOTIZEN
+     */
+    if (
+      target?.name ===
+      "notes"
+    ) {
+
+      await this._updateCharacterData({
+
+        notes:
+          target.value
+      });
+
+
+      return;
+    }
+  }
+
+
+  /* ========================================================= */
+  /* APPLICATION ACTIONS                                      */
+  /* ========================================================= */
+
+  static _actionSwitchTab(
+    event,
+    target
+  ) {
+
+    this._activateTab(
+      target.dataset.tab
+    );
+  }
+
+
+  static async _actionSetMana(
+    event,
+    target
+  ) {
+
+    const mana =
+      Number(
+        target.dataset.value
+      );
+
+
+    await this._updateCharacterData({
+      mana
+    });
+  }
+
+
+  static async _actionSetAbility(
+    event,
+    target
+  ) {
+
+    const ability =
+      target.dataset.ability;
+
+
+    const value =
+      Number(
+        target.dataset.value
+      );
+
+
+    await this._setAbility(
+      ability,
+      value
+    );
+  }
+
+
+  static async _actionRollAbility(
+    event,
+    target
+  ) {
+
+    await this._rollAbility(
+      target.dataset.ability
+    );
+  }
+
+
+  static async _actionOpenInventoryItem(
+    event,
+    target
+  ) {
+
+    await this._openInventoryItem(
+      target.dataset.itemId
+    );
+  }
+
+
+  static async _actionQuantityMinus(
+    event,
+    target
+  ) {
+
+    event.stopPropagation();
+
+
+    await this._changeInventoryQuantity(
+      target.dataset.itemId,
+      -1
+    );
+  }
+
+
+  static async _actionQuantityPlus(
+    event,
+    target
+  ) {
+
+    event.stopPropagation();
+
+
+    await this._changeInventoryQuantity(
+      target.dataset.itemId,
+      1
+    );
+  }
+
+
+  static async _actionPostInventoryItem(
+    event,
+    target
+  ) {
+
+    event.stopPropagation();
+
+
+    await this._postInventoryItemToChat(
+      target.dataset.itemId
+    );
+  }
+
+
+  static async _actionRemoveInventoryItem(
+    event,
+    target
+  ) {
+
+    event.stopPropagation();
+
+
+    await this._removeInventoryItem(
+      target.dataset.itemId
     );
   }
 
@@ -896,9 +753,11 @@ export class FarbmeisterActorSheet
     if (
       ![
         "character",
-        "inventory"
+        "inventory",
+        "notes"
       ].includes(tab)
     ) {
+
       tab =
         "character";
     }
@@ -949,6 +808,34 @@ export class FarbmeisterActorSheet
 
 
   /* ========================================================= */
+  /* KREISE                                                    */
+  /* ========================================================= */
+
+  _createCircles(
+    max,
+    current
+  ) {
+
+    return Array.from(
+
+      {
+        length:
+          max
+      },
+
+      (_, index) => ({
+
+        value:
+          index + 1,
+
+        filled:
+          index < current
+      })
+    );
+  }
+
+
+  /* ========================================================= */
   /* FÄHIGKEIT SETZEN                                         */
   /* ========================================================= */
 
@@ -964,6 +851,7 @@ export class FarbmeisterActorSheet
         "support"
       ].includes(ability)
     ) {
+
       return;
     }
 
@@ -988,13 +876,16 @@ export class FarbmeisterActorSheet
     const abilities = {
 
       attack:
-        current.abilities?.attack ?? 0,
+        current.abilities
+          ?.attack ?? 0,
 
       defense:
-        current.abilities?.defense ?? 0,
+        current.abilities
+          ?.defense ?? 0,
 
       support:
-        current.abilities?.support ?? 0
+        current.abilities
+          ?.support ?? 0
     };
 
 
@@ -1029,12 +920,16 @@ export class FarbmeisterActorSheet
 
 
     const color =
-      FARBMISTER_COLORS[colorKey] ??
+      FARBMISTER_COLORS[
+        colorKey
+      ] ??
       FARBMISTER_COLORS.red;
 
 
     const ability =
-      color.abilities?.[abilityKey];
+      color.abilities?.[
+        abilityKey
+      ];
 
 
     if (!ability) {
@@ -1044,7 +939,8 @@ export class FarbmeisterActorSheet
 
     const bonus =
       Number(
-        character.abilities?.[abilityKey] ??
+        character.abilities
+          ?.[abilityKey] ??
         0
       );
 
@@ -1081,6 +977,252 @@ export class FarbmeisterActorSheet
         </div>
       `
     });
+  }
+
+
+  /* ========================================================= */
+  /* INVENTAR NORMALISIEREN                                    */
+  /* ========================================================= */
+
+  _normalizeInventory(
+    rawInventory
+  ) {
+
+    if (
+      !Array.isArray(
+        rawInventory
+      )
+    ) {
+
+      return [];
+    }
+
+
+    const validSlots = [
+
+      {
+        container:
+          "pocket",
+
+        slot:
+          0
+      },
+
+      {
+        container:
+          "pocket",
+
+        slot:
+          1
+      },
+
+      {
+        container:
+          "backpack",
+
+        slot:
+          0
+      },
+
+      {
+        container:
+          "backpack",
+
+        slot:
+          1
+      },
+
+      {
+        container:
+          "backpack",
+
+        slot:
+          2
+      }
+    ];
+
+
+    const used =
+      new Set();
+
+
+    const result =
+      [];
+
+
+    for (
+      let index = 0;
+      index <
+      rawInventory.length;
+      index++
+    ) {
+
+      if (
+        result.length >= 5
+      ) {
+
+        break;
+      }
+
+
+      const oldItem =
+        rawInventory[index] ??
+        {};
+
+
+      let container =
+        oldItem.container;
+
+
+      let slot =
+        Number(
+          oldItem.slot
+        );
+
+
+      let slotKey =
+        `${container}:${slot}`;
+
+
+      const positionIsValid =
+        validSlots.some(
+          position =>
+            position.container ===
+              container &&
+            position.slot ===
+              slot
+        ) &&
+        !used.has(
+          slotKey
+        );
+
+
+      if (
+        !positionIsValid
+      ) {
+
+        const freePosition =
+          validSlots.find(
+            position =>
+              !used.has(
+                `${position.container}:${position.slot}`
+              )
+          );
+
+
+        if (
+          !freePosition
+        ) {
+
+          break;
+        }
+
+
+        container =
+          freePosition.container;
+
+        slot =
+          freePosition.slot;
+
+        slotKey =
+          `${container}:${slot}`;
+      }
+
+
+      used.add(
+        slotKey
+      );
+
+
+      result.push({
+
+        id:
+          oldItem.id ??
+          `legacy-${index}`,
+
+        container,
+
+        slot,
+
+        itemUuid:
+          typeof oldItem.itemUuid ===
+          "string"
+            ? oldItem.itemUuid
+            : null,
+
+        name:
+          oldItem.name ??
+          "Gegenstand",
+
+        img:
+          oldItem.img ??
+          "icons/svg/item-bag.svg",
+
+        quantity:
+          Math.max(
+            1,
+            Number(
+              oldItem.quantity ??
+              1
+            ) || 1
+          ),
+
+        sourceAvailable:
+          false
+      });
+    }
+
+
+    return result;
+  }
+
+
+  /* ========================================================= */
+  /* INVENTAR-SLOTS                                           */
+  /* ========================================================= */
+
+  _createInventorySlots(
+    container,
+    count,
+    inventory
+  ) {
+
+    return Array.from(
+
+      {
+        length:
+          count
+      },
+
+      (_, slot) => {
+
+        const item =
+          inventory.find(
+            entry =>
+              entry.container ===
+                container &&
+              entry.slot ===
+                slot
+          );
+
+
+        return {
+
+          container,
+
+          slot,
+
+          slotNumber:
+            slot + 1,
+
+          occupied:
+            Boolean(item),
+
+          item:
+            item ?? null
+        };
+      }
+    );
   }
 
 
@@ -1122,6 +1264,7 @@ export class FarbmeisterActorSheet
 
 
     await this._updateCharacterData({
+
       inventory:
         this._normalizeInventory(
           inventory
@@ -1131,20 +1274,184 @@ export class FarbmeisterActorSheet
 
 
   /* ========================================================= */
+  /* DRAG & DROP                                               */
+  /* ========================================================= */
+
+  async _onDropItem(
+    event,
+    item
+  ) {
+
+    const target =
+      event.target instanceof Element
+        ? event.target.closest(
+            "[data-inventory-slot]"
+          )
+        : null;
+
+
+    if (!target) {
+
+      ui.notifications.info(
+        "Ziehe das Item direkt auf einen Inventarslot."
+      );
+
+      return null;
+    }
+
+
+    const container =
+      target.dataset.container;
+
+
+    const slot =
+      Number(
+        target.dataset.slot
+      );
+
+
+    if (
+      !this._isValidInventorySlot(
+        container,
+        slot
+      )
+    ) {
+
+      ui.notifications.warn(
+        "Dieser Inventarslot ist ungültig."
+      );
+
+      return null;
+    }
+
+
+    if (
+      !item ||
+      item.documentName !== "Item"
+    ) {
+
+      ui.notifications.warn(
+        "Hier können nur Foundry-Items abgelegt werden."
+      );
+
+      return null;
+    }
+
+
+    const itemUuid =
+      item.uuid;
+
+
+    if (!itemUuid) {
+
+      ui.notifications.warn(
+        "Dieses Item besitzt keine gültige UUID."
+      );
+
+      return null;
+    }
+
+
+    const inventory =
+      this._getInventory();
+
+
+    const existingItem =
+      inventory.find(
+        entry =>
+          entry.container ===
+            container &&
+          entry.slot ===
+            slot
+      );
+
+
+    /*
+     * Dasselbe Item auf denselben Slot:
+     * Menge +1
+     */
+    if (
+      existingItem &&
+      existingItem.itemUuid ===
+        itemUuid
+    ) {
+
+      existingItem.quantity =
+        Math.max(
+          1,
+          Number(
+            existingItem.quantity ??
+            1
+          )
+        ) + 1;
+
+
+      await this._saveInventory(
+        inventory
+      );
+
+
+      return item;
+    }
+
+
+    if (
+      existingItem
+    ) {
+
+      ui.notifications.warn(
+        "Dieser Inventarslot ist bereits belegt."
+      );
+
+      return null;
+    }
+
+
+    inventory.push({
+
+      id:
+        foundry.utils.randomID(),
+
+      container,
+
+      slot,
+
+      itemUuid,
+
+      name:
+        item.name ??
+        "Gegenstand",
+
+      img:
+        item.img ??
+        "icons/svg/item-bag.svg",
+
+      quantity:
+        1
+    });
+
+
+    await this._saveInventory(
+      inventory
+    );
+
+
+    return item;
+  }
+
+
+  /* ========================================================= */
   /* SLOT PRÜFEN                                               */
   /* ========================================================= */
 
-  _isValidSlot(
+  _isValidInventorySlot(
     container,
     slot
   ) {
 
-    slot =
-      Number(slot);
-
-
     if (
-      container === "pocket"
+      container ===
+      "pocket"
     ) {
 
       return (
@@ -1155,7 +1462,8 @@ export class FarbmeisterActorSheet
 
 
     if (
-      container === "backpack"
+      container ===
+      "backpack"
     ) {
 
       return (
@@ -1171,597 +1479,161 @@ export class FarbmeisterActorSheet
 
 
   /* ========================================================= */
-  /* SLOT-NAME                                                 */
+  /* INVENTAREINTRAG FINDEN                                   */
   /* ========================================================= */
 
-  _getSlotLabel(
-    container,
-    slot
+  _findInventoryEntry(
+    itemId
   ) {
 
-    const number =
-      Number(slot) + 1;
-
-
-    if (
-      container === "pocket"
-    ) {
-
-      return `Hosentasche – Slot ${number}`;
-    }
-
-
-    return `Rucksack – Slot ${number}`;
-  }
-
-
-  /* ========================================================= */
-  /* ITEM-DIALOG                                               */
-  /* ========================================================= */
-
-async _openInventoryItemDialog({
-  itemId = null,
-  container = null,
-  slot = null
-} = {}) {
-
-  const inventory =
-    this._getInventory();
-
-
-  /*
-   * Prüfen, ob wir einen bestehenden
-   * Gegenstand bearbeiten.
-   */
-  const existingItem =
-    itemId
-      ? inventory.find(
-          item => item.id === itemId
-        )
-      : null;
-
-
-  /*
-   * Bei einem neuen Item prüfen,
-   * ob der Slot gültig und frei ist.
-   */
-  if (!existingItem) {
-
-    if (
-      !this._isValidSlot(
-        container,
-        slot
-      )
-    ) {
-
-      ui.notifications.warn(
-        "Ungültiger Inventarslot."
-      );
-
-      return;
-    }
-
-
-    const occupied =
-      inventory.some(
+    return this
+      ._getInventory()
+      .find(
         item =>
-          item.container === container &&
-          item.slot === Number(slot)
+          item.id === itemId
+      ) ??
+      null;
+  }
+
+
+  /* ========================================================= */
+  /* ITEM AUFLÖSEN                                             */
+  /* ========================================================= */
+
+  async _resolveInventoryItem(
+    entry
+  ) {
+
+    if (
+      !entry?.itemUuid
+    ) {
+
+      return null;
+    }
+
+
+    try {
+
+      const document =
+        await fromUuid(
+          entry.itemUuid
+        );
+
+
+      if (
+        document?.documentName ===
+        "Item"
+      ) {
+
+        return document;
+      }
+
+    }
+    catch (error) {
+
+      console.warn(
+        "Farbmeister Sheet | Item-UUID konnte nicht aufgelöst werden:",
+        entry.itemUuid,
+        error
+      );
+    }
+
+
+    return null;
+  }
+
+
+  /* ========================================================= */
+  /* ITEM ÖFFNEN                                               */
+  /* ========================================================= */
+
+  async _openInventoryItem(
+    itemId
+  ) {
+
+    const entry =
+      this._findInventoryEntry(
+        itemId
       );
 
 
-    if (occupied) {
+    if (!entry) {
+      return;
+    }
+
+
+    const item =
+      await this._resolveInventoryItem(
+        entry
+      );
+
+
+    if (!item) {
 
       ui.notifications.warn(
-        "Dieser Inventarslot ist bereits belegt."
+        "Das ursprüngliche Foundry-Item existiert nicht mehr."
       );
 
       return;
     }
-  }
 
 
-  /*
-   * Bestehendes oder neues Item.
-   */
-  const item =
-    existingItem ?? {
-
-      id:
-        foundry.utils.randomID(),
-
-      container,
-
-      slot:
-        Number(slot),
-
-      name:
-        "",
-
-      quantity:
-        1,
-
-      description:
-        "",
-
-      img:
-        "icons/svg/item-bag.svg"
-    };
-
-
-  /*
-   * HTML-sichere Werte.
-   */
-  const safeName =
-    foundry.utils.escapeHTML(
-      item.name ?? ""
-    );
-
-
-  const safeDescription =
-    foundry.utils.escapeHTML(
-      item.description ?? ""
-    );
-
-
-  const safeImage =
-    foundry.utils.escapeHTML(
-      item.img ??
-      "icons/svg/item-bag.svg"
-    );
-
-
-  const slotLabel =
-    this._getSlotLabel(
-      item.container,
-      item.slot
-    );
-
-
-  /*
-   * Dialog-Inhalt.
-   */
-  const content = `
-
-    <div class="farbmeister-item-dialog">
-
-      <div class="item-dialog-location">
-        ${slotLabel}
-      </div>
-
-
-      <div class="item-dialog-image-row">
-
-        <img
-          class="item-dialog-preview"
-          src="${safeImage}"
-          alt=""
-        >
-
-
-        <div class="item-dialog-image-controls">
-
-          <label>
-            Bild
-          </label>
-
-
-          <div class="item-dialog-image-input">
-
-            <input
-              type="text"
-              name="img"
-              value="${safeImage}"
-            >
-
-
-            <button
-              type="button"
-              data-browse-image
-              title="Bild auswählen"
-            >
-              <i class="fas fa-folder-open"></i>
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label>
-          Name
-        </label>
-
-        <input
-          type="text"
-          name="itemName"
-          value="${safeName}"
-          placeholder="Gegenstand"
-          autofocus
-        >
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label>
-          Menge
-        </label>
-
-        <input
-          type="number"
-          name="quantity"
-          min="1"
-          step="1"
-          value="${Math.max(
-            1,
-            Number(item.quantity ?? 1)
-          )}"
-        >
-
-      </div>
-
-
-      <div class="form-group stacked">
-
-        <label>
-          Beschreibung
-        </label>
-
-        <textarea
-          name="description"
-          rows="5"
-          placeholder="Beschreibung des Gegenstands..."
-        >${safeDescription}</textarea>
-
-      </div>
-
-    </div>
-  `;
-
-
-  /*
-   * Dialog öffnen.
-   *
-   * Wir benutzen prompt und lesen die Werte
-   * direkt aus dem Formular aus.
-   */
-  const result =
-    await DialogV2.prompt({
-
-      window: {
-
-        title:
-          existingItem
-            ? "Gegenstand bearbeiten"
-            : "Gegenstand hinzufügen"
-      },
-
-
-      content,
-
-
-      modal:
-        true,
-
-
-      rejectClose:
-        false,
-
-
-      ok: {
-
-        label:
-          existingItem
-            ? "Speichern"
-            : "Hinzufügen",
-
-        icon:
-          "fas fa-save",
-
-
-        /*
-         * Das hier ist entscheidend:
-         * Wir geben unsere eigenen Daten zurück.
-         */
-        callback:
-          (event, button, dialog) => {
-
-            const form =
-              button.form;
-
-
-            return {
-
-              name:
-                form.elements.itemName
-                  .value
-                  .trim(),
-
-
-              quantity:
-                Math.max(
-                  1,
-                  Number(
-                    form.elements.quantity.value
-                  ) || 1
-                ),
-
-
-              description:
-                form.elements.description
-                  .value,
-
-
-              img:
-                form.elements.img
-                  .value
-                  .trim()
-            };
-          }
-      },
-
-
-      /*
-       * Bildbrowser aktivieren.
-       */
-      render:
-        (event, dialog) => {
-
-          const dialogRoot =
-            dialog.element;
-
-
-          const browseButton =
-            dialogRoot.querySelector(
-              "[data-browse-image]"
-            );
-
-
-          const imageInput =
-            dialogRoot.querySelector(
-              "input[name='img']"
-            );
-
-
-          const preview =
-            dialogRoot.querySelector(
-              ".item-dialog-preview"
-            );
-
-
-          /*
-           * Manuell geänderten Bildpfad
-           * direkt in der Vorschau anzeigen.
-           */
-          imageInput
-            ?.addEventListener(
-              "change",
-              () => {
-
-                if (
-                  preview &&
-                  imageInput.value
-                ) {
-
-                  preview.src =
-                    imageInput.value;
-                }
-              }
-            );
-
-
-          /*
-           * Foundry FilePicker.
-           */
-          browseButton
-            ?.addEventListener(
-              "click",
-              async browseEvent => {
-
-                browseEvent.preventDefault();
-
-
-                const FilePicker =
-                  foundry.applications.apps.FilePicker;
-
-
-                const picker =
-                  new FilePicker({
-
-                    type:
-                      "image",
-
-                    current:
-                      imageInput?.value ||
-                      "icons/svg/item-bag.svg",
-
-                    callback:
-                      path => {
-
-                        if (imageInput) {
-
-                          imageInput.value =
-                            path;
-                        }
-
-
-                        if (preview) {
-
-                          preview.src =
-                            path;
-                        }
-                      }
-                  });
-
-
-                await picker.render({
-                  force: true
-                });
-              }
-            );
-        }
+    item.sheet.render({
+      force: true
     });
-
-
-  /*
-   * Abbrechen / X
-   */
-  if (!result) {
-    return;
   }
 
 
-  /*
-   * Werte bereinigen.
-   */
-  const name =
-    result.name ||
-    "Gegenstand";
-
-
-  const quantity =
-    Math.max(
-      1,
-      Number(result.quantity) || 1
-    );
-
-
-  const description =
-    result.description ?? "";
-
-
-  const img =
-    result.img ||
-    "icons/svg/item-bag.svg";
-
-
-  /*
-   * BESTEHENDES ITEM BEARBEITEN
-   */
-  if (existingItem) {
-
-    existingItem.name =
-      name;
-
-    existingItem.quantity =
-      quantity;
-
-    existingItem.description =
-      description;
-
-    existingItem.img =
-      img;
-
-
-    await this._saveInventory(
-      inventory
-    );
-
-
-    return;
-  }
-
-
-  /*
-   * NEUES ITEM ANLEGEN
-   */
-  inventory.push({
-
-    id:
-      item.id,
-
-    container:
-      item.container,
-
-    slot:
-      item.slot,
-
-    name,
-
-    quantity,
-
-    description,
-
-    img
-  });
-
-
-  await this._saveInventory(
-    inventory
-  );
-}
-
   /* ========================================================= */
-  /* ITEM LÖSCHEN                                              */
+  /* MENGE ÄNDERN                                              */
   /* ========================================================= */
 
-  async _confirmDeleteInventoryItem(
-    itemId
+  async _changeInventoryQuantity(
+    itemId,
+    amount
   ) {
 
     const inventory =
       this._getInventory();
 
 
-    const item =
+    const entry =
       inventory.find(
-        entry =>
-          entry.id === itemId
+        item =>
+          item.id === itemId
       );
 
 
-    if (!item) {
+    if (!entry) {
       return;
     }
 
 
-    const safeName =
-      foundry.utils.escapeHTML(
-        item.name
+    entry.quantity =
+      Math.max(
+        1,
+        Number(
+          entry.quantity ??
+          1
+        ) +
+        Number(
+          amount ??
+          0
+        )
       );
 
 
-    const confirmed =
-      await DialogV2.confirm({
-
-        window: {
-          title:
-            "Gegenstand löschen"
-        },
-
-        content: `
-          <p>
-            Soll <strong>${safeName}</strong>
-            wirklich aus dem Inventar entfernt werden?
-          </p>
-        `,
-
-        modal:
-          true,
-
-        rejectClose:
-          false
-      });
-
-
-    if (!confirmed) {
-      return;
-    }
-
-
-    await this._deleteInventoryItem(
-      itemId
+    await this._saveInventory(
+      inventory
     );
   }
 
 
-  async _deleteInventoryItem(
+  /* ========================================================= */
+  /* ITEM ENTFERNEN                                           */
+  /* ========================================================= */
+
+  async _removeInventoryItem(
     itemId
   ) {
 
@@ -1781,52 +1653,51 @@ async _openInventoryItemDialog({
 
 
   /* ========================================================= */
-  /* ITEM IN CHAT                                              */
+  /* ITEM IN CHAT                                             */
   /* ========================================================= */
 
   async _postInventoryItemToChat(
     itemId
   ) {
 
-    const inventory =
-      this._getInventory();
-
-
-    const item =
-      inventory.find(
-        entry =>
-          entry.id === itemId
+    const entry =
+      this._findInventoryEntry(
+        itemId
       );
 
 
-    if (!item) {
+    if (!entry) {
       return;
     }
 
 
-    const safeName =
-      foundry.utils.escapeHTML(
-        item.name ||
-        "Gegenstand"
+    const sourceItem =
+      await this._resolveInventoryItem(
+        entry
       );
 
 
-    const safeDescription =
-      foundry.utils
-        .escapeHTML(
-          item.description ||
-          ""
-        )
-        .replace(
-          /\n/g,
-          "<br>"
-        );
+    const name =
+      sourceItem?.name ??
+      entry.name ??
+      "Gegenstand";
+
+
+    const image =
+      sourceItem?.img ??
+      entry.img ??
+      "icons/svg/item-bag.svg";
+
+
+    const safeName =
+      foundry.utils.escapeHTML(
+        name
+      );
 
 
     const safeImage =
       foundry.utils.escapeHTML(
-        item.img ||
-        "icons/svg/item-bag.svg"
+        image
       );
 
 
@@ -1834,7 +1705,8 @@ async _openInventoryItemDialog({
       Math.max(
         1,
         Number(
-          item.quantity ?? 1
+          entry.quantity ??
+          1
         )
       );
 
@@ -1848,14 +1720,15 @@ async _openInventoryItemDialog({
         }),
 
       content: `
-
         <div class="farbmeister-chat-item">
 
-          <div style="
-            display:flex;
-            align-items:center;
-            gap:10px;
-          ">
+          <div
+            style="
+              display:flex;
+              align-items:center;
+              gap:10px;
+            "
+          >
 
             <img
               src="${safeImage}"
@@ -1870,11 +1743,7 @@ async _openInventoryItemDialog({
 
             <div>
 
-              <strong
-                style="
-                  font-size:1.15em;
-                "
-              >
+              <strong>
                 ${safeName}
               </strong>
 
@@ -1886,17 +1755,6 @@ async _openInventoryItemDialog({
 
           </div>
 
-
-          ${
-            safeDescription
-              ? `
-                <p>
-                  ${safeDescription}
-                </p>
-              `
-              : ""
-          }
-
         </div>
       `
     });
@@ -1904,7 +1762,7 @@ async _openInventoryItemDialog({
 
 
   /* ========================================================= */
-  /* CHARACTER-DATEN SPEICHERN                                 */
+  /* CHARACTER-DATEN SPEICHERN                                */
   /* ========================================================= */
 
   async _updateCharacterData(
@@ -1935,22 +1793,39 @@ async _openInventoryItemDialog({
       abilities: {
 
         attack:
-          current.abilities?.attack ??
-          FARBMISTER_DEFAULTS.abilities.attack,
+          current.abilities
+            ?.attack ??
+          FARBMISTER_DEFAULTS
+            .abilities
+            .attack,
 
         defense:
-          current.abilities?.defense ??
-          FARBMISTER_DEFAULTS.abilities.defense,
+          current.abilities
+            ?.defense ??
+          FARBMISTER_DEFAULTS
+            .abilities
+            .defense,
 
         support:
-          current.abilities?.support ??
-          FARBMISTER_DEFAULTS.abilities.support
+          current.abilities
+            ?.support ??
+          FARBMISTER_DEFAULTS
+            .abilities
+            .support
       },
 
       inventory:
         this._normalizeInventory(
           current.inventory
         ),
+
+      inventoryNotes:
+        current.inventoryNotes ??
+        "",
+
+      notes:
+        current.notes ??
+        "",
 
       ...changes
     };

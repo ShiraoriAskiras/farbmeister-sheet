@@ -27,6 +27,7 @@
 
         </div>
 
+
         <span class="inventory-capacity">
           {{pocketCount}} / 2
         </span>
@@ -38,17 +39,22 @@
 
         {{#each pocketSlots}}
 
-          <div class="inventory-slot-wrapper">
+          <div
+            class="inventory-slot-wrapper {{#if occupied}}occupied{{else}}empty{{/if}}"
+            data-inventory-slot
+            data-container="{{container}}"
+            data-slot="{{slot}}"
+          >
 
 
             {{#if occupied}}
 
               <button
                 type="button"
-                class="inventory-slot occupied"
-                data-action="edit-slot-item"
+                class="inventory-item-main"
+                data-action="open-inventory-item"
                 data-item-id="{{item.id}}"
-                title="{{item.name}} bearbeiten"
+                title="{{item.name}} öffnen"
               >
 
                 <img
@@ -56,18 +62,52 @@
                   alt="{{item.name}}"
                 >
 
+
                 <div class="inventory-slot-name">
                   {{item.name}}
                 </div>
+
 
                 <div class="inventory-slot-quantity">
                   ×{{item.quantity}}
                 </div>
 
+
+                {{#unless item.sourceAvailable}}
+
+                  <div
+                    class="inventory-source-warning"
+                    title="Das ursprüngliche Foundry-Item wurde nicht gefunden."
+                  >
+                    <i class="fas fa-triangle-exclamation"></i>
+                  </div>
+
+                {{/unless}}
+
               </button>
 
 
               <div class="inventory-slot-actions">
+
+                <button
+                  type="button"
+                  data-action="quantity-minus"
+                  data-item-id="{{item.id}}"
+                  title="Menge -1"
+                >
+                  <i class="fas fa-minus"></i>
+                </button>
+
+
+                <button
+                  type="button"
+                  data-action="quantity-plus"
+                  data-item-id="{{item.id}}"
+                  title="Menge +1"
+                >
+                  <i class="fas fa-plus"></i>
+                </button>
+
 
                 <button
                   type="button"
@@ -78,14 +118,15 @@
                   <i class="fas fa-comment"></i>
                 </button>
 
+
                 <button
                   type="button"
-                  class="inventory-delete-button"
-                  data-action="delete-inventory-item"
+                  class="inventory-remove-button"
+                  data-action="remove-inventory-item"
                   data-item-id="{{item.id}}"
-                  title="Gegenstand löschen"
+                  title="Aus dem Inventar entfernen"
                 >
-                  <i class="fas fa-trash"></i>
+                  <i class="fas fa-xmark"></i>
                 </button>
 
               </div>
@@ -93,22 +134,19 @@
 
             {{else}}
 
-              <button
-                type="button"
-                class="inventory-slot empty"
-                data-action="add-slot-item"
-                data-container="{{container}}"
-                data-slot="{{slot}}"
-                title="Gegenstand hinzufügen"
-              >
+              <div class="inventory-drop-zone">
 
-                <i class="fas fa-plus"></i>
+                <i class="fas fa-arrow-down"></i>
 
                 <span>
-                  Hinzufügen
+                  Item hierher
                 </span>
 
-              </button>
+                <small>
+                  ziehen
+                </small>
+
+              </div>
 
             {{/if}}
 
@@ -142,6 +180,7 @@
 
         </div>
 
+
         <span class="inventory-capacity">
           {{backpackCount}} / 3
         </span>
@@ -153,17 +192,22 @@
 
         {{#each backpackSlots}}
 
-          <div class="inventory-slot-wrapper">
+          <div
+            class="inventory-slot-wrapper {{#if occupied}}occupied{{else}}empty{{/if}}"
+            data-inventory-slot
+            data-container="{{container}}"
+            data-slot="{{slot}}"
+          >
 
 
             {{#if occupied}}
 
               <button
                 type="button"
-                class="inventory-slot occupied"
-                data-action="edit-slot-item"
+                class="inventory-item-main"
+                data-action="open-inventory-item"
                 data-item-id="{{item.id}}"
-                title="{{item.name}} bearbeiten"
+                title="{{item.name}} öffnen"
               >
 
                 <img
@@ -171,18 +215,52 @@
                   alt="{{item.name}}"
                 >
 
+
                 <div class="inventory-slot-name">
                   {{item.name}}
                 </div>
+
 
                 <div class="inventory-slot-quantity">
                   ×{{item.quantity}}
                 </div>
 
+
+                {{#unless item.sourceAvailable}}
+
+                  <div
+                    class="inventory-source-warning"
+                    title="Das ursprüngliche Foundry-Item wurde nicht gefunden."
+                  >
+                    <i class="fas fa-triangle-exclamation"></i>
+                  </div>
+
+                {{/unless}}
+
               </button>
 
 
               <div class="inventory-slot-actions">
+
+                <button
+                  type="button"
+                  data-action="quantity-minus"
+                  data-item-id="{{item.id}}"
+                  title="Menge -1"
+                >
+                  <i class="fas fa-minus"></i>
+                </button>
+
+
+                <button
+                  type="button"
+                  data-action="quantity-plus"
+                  data-item-id="{{item.id}}"
+                  title="Menge +1"
+                >
+                  <i class="fas fa-plus"></i>
+                </button>
+
 
                 <button
                   type="button"
@@ -193,14 +271,15 @@
                   <i class="fas fa-comment"></i>
                 </button>
 
+
                 <button
                   type="button"
-                  class="inventory-delete-button"
-                  data-action="delete-inventory-item"
+                  class="inventory-remove-button"
+                  data-action="remove-inventory-item"
                   data-item-id="{{item.id}}"
-                  title="Gegenstand löschen"
+                  title="Aus dem Inventar entfernen"
                 >
-                  <i class="fas fa-trash"></i>
+                  <i class="fas fa-xmark"></i>
                 </button>
 
               </div>
@@ -208,22 +287,19 @@
 
             {{else}}
 
-              <button
-                type="button"
-                class="inventory-slot empty"
-                data-action="add-slot-item"
-                data-container="{{container}}"
-                data-slot="{{slot}}"
-                title="Gegenstand hinzufügen"
-              >
+              <div class="inventory-drop-zone">
 
-                <i class="fas fa-plus"></i>
+                <i class="fas fa-arrow-down"></i>
 
                 <span>
-                  Hinzufügen
+                  Item hierher
                 </span>
 
-              </button>
+                <small>
+                  ziehen
+                </small>
+
+              </div>
 
             {{/if}}
 
@@ -234,6 +310,34 @@
       </div>
 
     </section>
+
+
+
+    {{!-- =================================================== --}}
+    {{!-- INVENTARNOTIZEN                                     --}}
+    {{!-- =================================================== --}}
+
+    <section class="inventory-notes-section">
+
+      <header class="inventory-notes-header">
+
+        <i class="fas fa-pencil"></i>
+
+        <span>
+          Inventarnotizen
+        </span>
+
+      </header>
+
+
+      <textarea
+        class="inventory-notes-textarea"
+        name="inventoryNotes"
+        placeholder="Notizen zum Inventar, Beute, Einkäufe, wichtige Gegenstände..."
+      >{{character.inventoryNotes}}</textarea>
+
+    </section>
+
 
   </section>
 

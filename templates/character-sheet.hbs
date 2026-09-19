@@ -21,8 +21,18 @@
       data-action="switch-tab"
       data-tab="inventory"
     >
-      <i class="fas fa-backpack"></i>
+      <i class="fas fa-box-open"></i>
       Inventar
+    </button>
+
+    <button
+      type="button"
+      class="farbmeister-tab-button"
+      data-action="switch-tab"
+      data-tab="notes"
+    >
+      <i class="fas fa-book"></i>
+      Notizen
     </button>
 
   </nav>
@@ -36,14 +46,9 @@
     <div class="farbmeister-sheet-body">
 
 
-      {{!-- ================================================= --}}
-      {{!-- LINKE SEITE                                       --}}
-      {{!-- ================================================= --}}
-
       <div class="farbmeister-left">
 
 
-        {{!-- NAME --}}
         <section class="farbmeister-box name-box">
 
           <label>
@@ -52,14 +57,13 @@
 
           <input
             type="text"
+            name="actorName"
             value="{{actorName}}"
-            data-action="change-name"
           >
 
         </section>
 
 
-        {{!-- CHARAKTERDATEN --}}
         <section class="farbmeister-box character-box">
 
           <label class="big-label">
@@ -68,7 +72,7 @@
 
 
           <select
-            data-action="change-color"
+            name="color"
           >
 
             {{#each colors}}
@@ -85,7 +89,6 @@
           </select>
 
 
-          {{!-- LEBEN --}}
           <div
             class="resource-row hp-row"
           >
@@ -98,10 +101,10 @@
 
               <input
                 type="number"
+                name="hp"
                 min="0"
                 max="25"
                 value="{{character.hp}}"
-                data-action="change-hp"
               >
 
               <span>
@@ -113,7 +116,6 @@
           </div>
 
 
-          {{!-- FARBTROPFEN --}}
           <div
             class="resource-row mana-row"
           >
@@ -146,14 +148,9 @@
 
 
 
-      {{!-- ================================================= --}}
-      {{!-- RECHTE SEITE                                      --}}
-      {{!-- ================================================= --}}
-
       <div class="farbmeister-right">
 
 
-        {{!-- FARBHEADER --}}
         <section class="color-header">
 
           <div class="color-icon">
@@ -175,7 +172,6 @@
         </section>
 
 
-        {{!-- FÄHIGKEITEN --}}
         <section class="ability-box">
 
           {{#each abilities}}

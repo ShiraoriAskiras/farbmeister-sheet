@@ -1,0 +1,37 @@
+<div
+  class="farbmeister-tab-content notes-tab"
+  data-tab-content="notes"
+  style="--farbmeister-accent: {{selectedColor.accent}};"
+>
+
+  <section class="notes-panel">
+
+
+    <header class="notes-header">
+
+      <div>
+
+        <h2>
+          <i class="fas fa-book-open"></i>
+          Notizen
+        </h2>
+
+        <p>
+          Persönliche Notizen von {{actorName}}
+        </p>
+
+      </div>
+
+    </header>
+
+
+    <textarea
+      class="character-notes-textarea"
+      name="notes"
+      placeholder="Sessionnotizen, Personen, Orte, Hinweise, Aufgaben, Erinnerungen..."
+    >{{character.notes}}</textarea>
+
+
+  </section>
+
+</div>
