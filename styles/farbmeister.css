@@ -18,15 +18,12 @@
   padding: 0;
   overflow: auto;
 
-  background:
-    linear-gradient(
-      110deg,
-      rgba(80, 180, 220, 0.30),
-      rgba(130, 190, 80, 0.22),
-      rgba(255, 220, 50, 0.24),
-      rgba(245, 100, 40, 0.24),
-      rgba(80, 170, 220, 0.24)
-    );
+  background-image:
+    url("/modules/farbmeister-sheet/assets/backgrounds/farbmeister-bg.jpg");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 
@@ -334,7 +331,7 @@
 
 .resource-circle.filled {
   background:
-    var(--farbmeister-background);
+    var(--farbmeister-accent);
 
   border-color:
     var(--farbmeister-accent);
@@ -494,7 +491,7 @@
 
 .ability-circle.filled {
   background:
-    var(--farbmeister-background);
+    var(--farbmeister-accent);
 
   border-color:
     var(--farbmeister-accent);
