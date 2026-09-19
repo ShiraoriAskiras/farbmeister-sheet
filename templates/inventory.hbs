@@ -1,0 +1,187 @@
+<div
+  class="farbmeister-tab-content inventory-tab"
+  data-tab-content="inventory"
+  style="--farbmeister-accent: {{selectedColor.accent}};"
+>
+
+  <section class="inventory-panel">
+
+    <header class="inventory-header">
+
+      <div>
+
+        <h2>
+          Inventar
+        </h2>
+
+        <p>
+          Gegenstände von {{actorName}}
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="add-item-button"
+        data-action="add-inventory-item"
+      >
+        <i class="fas fa-plus"></i>
+        Gegenstand
+      </button>
+
+    </header>
+
+
+
+    <div class="inventory-list">
+
+      {{#each inventory}}
+
+        <article
+          class="inventory-item"
+          data-item-id="{{id}}"
+        >
+
+
+          {{!-- BILD --}}
+          <button
+            type="button"
+            class="inventory-image-button"
+            data-action="pick-inventory-image"
+            data-item-id="{{id}}"
+            title="Bild ändern"
+          >
+
+            <img
+              src="{{img}}"
+              alt="{{name}}"
+            >
+
+          </button>
+
+
+
+          {{!-- DATEN --}}
+          <div class="inventory-item-data">
+
+
+            <div class="inventory-item-top">
+
+              <input
+                class="inventory-item-name"
+                type="text"
+                value="{{name}}"
+                data-action="update-inventory-item"
+                data-item-id="{{id}}"
+                data-field="name"
+              >
+
+
+              <div class="inventory-quantity">
+
+                <span>
+                  Menge
+                </span>
+
+
+                <button
+                  type="button"
+                  data-action="change-item-quantity"
+                  data-item-id="{{id}}"
+                  data-amount="-1"
+                >
+                  −
+                </button>
+
+
+                <input
+                  type="number"
+                  min="0"
+                  value="{{quantity}}"
+                  data-action="update-inventory-item"
+                  data-item-id="{{id}}"
+                  data-field="quantity"
+                >
+
+
+                <button
+                  type="button"
+                  data-action="change-item-quantity"
+                  data-item-id="{{id}}"
+                  data-amount="1"
+                >
+                  +
+                </button>
+
+              </div>
+
+            </div>
+
+
+            <textarea
+              class="inventory-description"
+              placeholder="Beschreibung des Gegenstands..."
+              data-action="update-inventory-item"
+              data-item-id="{{id}}"
+              data-field="description"
+            >{{description}}</textarea>
+
+          </div>
+
+
+
+          {{!-- BUTTONS --}}
+          <div class="inventory-item-actions">
+
+            <button
+              type="button"
+              data-action="post-inventory-item"
+              data-item-id="{{id}}"
+              title="Im Chat zeigen"
+            >
+              <i class="fas fa-comment"></i>
+            </button>
+
+
+            <button
+              type="button"
+              class="delete-item"
+              data-action="delete-inventory-item"
+              data-item-id="{{id}}"
+              title="Gegenstand löschen"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+
+          </div>
+
+
+        </article>
+
+      {{else}}
+
+        <div class="inventory-empty">
+
+          <i class="fas fa-bag-shopping"></i>
+
+          <p>
+            Das Inventar ist noch leer.
+          </p>
+
+          <button
+            type="button"
+            data-action="add-inventory-item"
+          >
+            Ersten Gegenstand hinzufügen
+          </button>
+
+        </div>
+
+      {{/each}}
+
+    </div>
+
+  </section>
+
+</div>

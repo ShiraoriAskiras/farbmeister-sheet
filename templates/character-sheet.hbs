@@ -1,7 +1,37 @@
 <div
-  class="farbmeister-sheet-body"
+  class="farbmeister-main-part"
   style="--farbmeister-accent: {{selectedColor.accent}};"
 >
+
+  <nav class="farbmeister-tabs">
+
+    <button
+      type="button"
+      class="farbmeister-tab-button active"
+      data-action="switch-tab"
+      data-tab="character"
+    >
+      Charakter
+    </button>
+
+    <button
+      type="button"
+      class="farbmeister-tab-button"
+      data-action="switch-tab"
+      data-tab="inventory"
+    >
+      Inventar
+    </button>
+
+  </nav>
+
+
+  <div
+    class="farbmeister-tab-content active"
+    data-tab-content="character"
+  >
+
+    <div class="farbmeister-sheet-body">
 
   <div class="farbmeister-left">
 
