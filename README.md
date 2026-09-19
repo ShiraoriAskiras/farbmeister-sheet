@@ -1,1 +1,1 @@
-https://github.com/ShiraoriAskiras/farbmeister-sheet/releases/download/1.0.0/module.json
+https://github.com/ShiraoriAskiras/farbmeister-sheet/releases/download/1.0.5/module.json
