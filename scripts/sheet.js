@@ -3,6 +3,7 @@ import {
   FARBMISTER_DEFAULTS
 } from "./config.js";
 
+import { FARBMEISTER_ITEM_TYPE } from "./main.js";
 
 const { HandlebarsApplicationMixin } =
   foundry.applications.api;

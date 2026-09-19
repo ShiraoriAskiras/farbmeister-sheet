@@ -1,0 +1,60 @@
+<div class="farbmeister-item-body">
+
+  <section class="item-panel">
+
+    <header class="item-name-row">
+
+      <input
+        type="text"
+        name="name"
+        value="{{item.name}}"
+        placeholder="Name des Items"
+        {{#unless editable}}disabled{{/unless}}
+      >
+
+    </header>
+
+
+    <div class="item-main">
+
+          <img
+        class="item-image"
+        src="{{item.img}}"
+        alt="{{item.name}}"
+        title="Bild ändern"
+        {{#if editable}}
+          data-action="editImage"
+          data-edit="img"
+        {{/if}}
+      >
+
+
+      <div class="item-description">
+
+        <textarea
+          name="system.description"
+          placeholder="Beschreibungstext des Items..."
+          {{#unless editable}}disabled{{/unless}}
+        >{{system.description}}</textarea>
+
+      </div>
+
+    </div>
+
+
+    <footer class="item-footer">
+
+      <label>
+        Menge
+        <input
+          type="number"
+          name="system.quantity"
+          min="0"
+          value="{{system.quantity}}"
+          {{#unless editable}}disabled{{/unless}}
+        >
+      </label>
+
+    </footer>
+  </section>
+</div>
