@@ -1,9 +1,24 @@
+const ICON_PATH = "modules/farbmeister-sheet/assets/icons/";
+const COLORS = {
+  rot:       "#ad0c00",
+  orange:    "#ec7100",
+  gelb:      "#ffd000",
+  gruen:      "#2d8323",
+  hellblau:  "#72C8F7",
+  dunkelblau:"#0f268d",
+  lila:       "#6c36b0",
+
+}
+
+
+
 export const FARBMEISTER_COLORS = {
   red: {
     label: "Rot",
     magic: "Feuer Magie",
-    icon: "🔥",
-    accent: "#c91717",
+    icon: `${ICON_PATH}Rot.png`,
+    emoji: "🔥",
+    accent: COLORS.rot,
 
     abilities: {
       attack: {
@@ -34,7 +49,7 @@ export const FARBMEISTER_COLORS = {
     label: "Orange",
     magic: "Stein Magie",
     icon: "🪨",
-    accent: "#ef8617",
+    accent: COLORS.orange,
 
     abilities: {
       attack: {
@@ -65,7 +80,7 @@ export const FARBMEISTER_COLORS = {
     label: "Gelb",
     magic: "Sonnen Magie",
     icon: "☀️",
-    accent: "#e6d400",
+    accent: COLORS.gelb,
 
     abilities: {
       attack: {
@@ -96,7 +111,7 @@ export const FARBMEISTER_COLORS = {
     label: "Grün",
     magic: "Wald Magie",
     icon: "🌳",
-    accent: "#32a852",
+    accent: COLORS.gruen,
 
     abilities: {
       attack: {
@@ -127,7 +142,7 @@ export const FARBMEISTER_COLORS = {
     label: "Hellblau",
     magic: "Wind Magie",
     icon: "💨",
-    accent: "#91d8ed",
+    accent: COLORS.hellblau,
 
     abilities: {
       attack: {
@@ -158,7 +173,7 @@ export const FARBMEISTER_COLORS = {
     label: "Dunkelblau",
     magic: "Wasser Magie",
     icon: "💧",
-    accent: "#0862b9",
+    accent: COLORS.dunkelblau,
 
     abilities: {
       attack: {
@@ -189,7 +204,7 @@ export const FARBMEISTER_COLORS = {
     label: "Lila",
     magic: "Mond Magie",
     icon: "🌙",
-    accent: "#8952a1",
+    accent: COLORS.lila,
 
     abilities: {
       attack: {
