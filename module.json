@@ -13,11 +13,13 @@
   },
 
   "esmodules": [
-    "scripts/main.js"
+    "scripts/main.js",
+    "scripts/npc/npc-main.js"
   ],
 
   "styles": [
-    "styles/farbmeister.css"
+    "styles/farbmeister.css",
+    "styles/npc-sheet.css"
   ],
 
   "documentTypes": {

@@ -1,0 +1,225 @@
+<div class="farbmeister-npc-sheet-body">
+
+  <div class="npc-main-card">
+
+
+    {{!-- =================================================== --}}
+    {{!-- KOPFZEILE                                           --}}
+    {{!-- =================================================== --}}
+
+    <header class="npc-header">
+
+      <input
+        class="npc-name-input"
+        type="text"
+        name="actorName"
+        value="{{actorName}}"
+        placeholder="NPC Name"
+      >
+
+
+      <button
+        type="button"
+        class="npc-symbol-button"
+        data-action="change-symbol"
+        title="Symbol ändern"
+      >
+
+        <img
+          src="{{npc.symbolImg}}"
+          alt="NPC Symbol"
+        >
+
+      </button>
+
+    </header>
+
+
+
+    {{!-- =================================================== --}}
+    {{!-- INHALT                                              --}}
+    {{!-- =================================================== --}}
+
+    <div class="npc-content">
+
+
+      {{!-- ================================================= --}}
+      {{!-- LINKE SPALTE                                     --}}
+      {{!-- ================================================= --}}
+
+      <div class="npc-left-column">
+
+
+        {{!-- PORTRAIT --}}
+        <button
+          type="button"
+          class="npc-portrait-button"
+          data-action="change-portrait"
+          title="NPC Bild ändern"
+        >
+
+          <img
+            src="{{actorImg}}"
+            alt="{{actorName}}"
+          >
+
+          <span class="npc-portrait-edit">
+
+            <i class="fas fa-camera"></i>
+
+            Bild ändern
+
+          </span>
+
+        </button>
+
+
+
+        {{!-- HP --}}
+        <section class="npc-hp-section">
+
+          <label>
+            HP
+          </label>
+
+
+          <div class="npc-hp-fields">
+
+            <input
+              type="number"
+              name="hpValue"
+              min="0"
+              value="{{npc.hp.value}}"
+              title="Aktuelle HP"
+            >
+
+            <span>
+              /
+            </span>
+
+            <input
+              type="number"
+              name="hpMax"
+              min="1"
+              value="{{npc.hp.max}}"
+              title="Maximale HP"
+            >
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+
+      {{!-- ================================================= --}}
+      {{!-- RECHTE SPALTE                                    --}}
+      {{!-- ================================================= --}}
+
+      <div class="npc-abilities-column">
+
+
+        {{#each abilities}}
+
+          <section class="npc-ability">
+
+
+            {{!-- ------------------------------------------- --}}
+            {{!-- NAME + KREISE                              --}}
+            {{!-- ------------------------------------------- --}}
+
+            <div class="npc-ability-header">
+
+
+              <button
+                type="button"
+                class="npc-roll-button"
+                data-action="roll-ability"
+                data-ability="{{key}}"
+                title="{{name}} würfeln"
+              >
+
+                <i class="fas fa-dice-d8"></i>
+
+              </button>
+
+
+              {{#if @first}}
+
+                <input
+                  class="npc-ability-name"
+                  type="text"
+                  name="abilityFirstName"
+                  value="{{name}}"
+                  placeholder="Fähigkeit 1"
+                >
+
+              {{else}}
+
+                <input
+                  class="npc-ability-name"
+                  type="text"
+                  name="abilitySecondName"
+                  value="{{name}}"
+                  placeholder="Fähigkeit 2"
+                >
+
+              {{/if}}
+
+
+              <div class="npc-ability-circles">
+
+                {{#each circles}}
+
+                  <button
+                    type="button"
+                    class="npc-ability-circle {{#if filled}}filled{{/if}}"
+                    data-action="set-ability"
+                    data-ability="{{../key}}"
+                    data-value="{{value}}"
+                    title="Stärke {{value}}"
+                  ></button>
+
+                {{/each}}
+
+              </div>
+
+            </div>
+
+
+
+            {{!-- ------------------------------------------- --}}
+            {{!-- BESCHREIBUNG                               --}}
+            {{!-- ------------------------------------------- --}}
+
+            {{#if @first}}
+
+              <textarea
+                class="npc-ability-description"
+                name="abilityFirstDescription"
+                placeholder="Beschreibung der Fähigkeit..."
+              >{{description}}</textarea>
+
+            {{else}}
+
+              <textarea
+                class="npc-ability-description"
+                name="abilitySecondDescription"
+                placeholder="Beschreibung der Fähigkeit..."
+              >{{description}}</textarea>
+
+            {{/if}}
+
+          </section>
+
+        {{/each}}
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

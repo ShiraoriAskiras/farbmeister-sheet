@@ -1,0 +1,659 @@
+/* ========================================================= */
+/* NPC SHEET - FENSTER                                       */
+/* ========================================================= */
+
+.farbmeister-npc-sheet .window-content {
+  padding: 0;
+
+  overflow: auto;
+
+  background:
+    linear-gradient(
+      125deg,
+      #75cbea 0%,
+      #81c96c 18%,
+      #e2dc59 36%,
+      #f0b34b 53%,
+      #e98770 70%,
+      #b37ccf 86%,
+      #72bfe1 100%
+    );
+}
+
+
+/* ========================================================= */
+/* HAUPTBEREICH                                              */
+/* ========================================================= */
+
+.farbmeister-npc-sheet-body {
+  min-height: 100%;
+
+  padding: 30px;
+
+  box-sizing: border-box;
+}
+
+
+.npc-main-card {
+  min-height: 520px;
+
+  padding: 20px;
+
+  color: #111;
+
+  background:
+    #5f5f5f;
+
+  border:
+    3px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.60
+    );
+
+  border-radius: 24px;
+
+  box-shadow:
+    0 8px 25px
+    rgba(
+      0,
+      0,
+      0,
+      0.30
+    );
+}
+
+
+/* ========================================================= */
+/* HEADER                                                    */
+/* ========================================================= */
+
+.npc-header {
+  display: grid;
+
+  grid-template-columns:
+    1fr 86px;
+
+  align-items: center;
+
+  gap: 20px;
+
+  margin-bottom: 20px;
+
+  padding:
+    10px 14px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.92
+    );
+
+  border-radius: 18px;
+}
+
+
+/* ========================================================= */
+/* NAME                                                      */
+/* ========================================================= */
+
+.npc-name-input {
+  width: 100%;
+  height: 54px;
+
+  padding:
+    0 10px;
+
+  color: #222;
+
+  background:
+    transparent;
+
+  border: none;
+
+  border-bottom:
+    2px solid
+    rgba(
+      0,
+      0,
+      0,
+      0.28
+    );
+
+  border-radius: 0;
+
+  font-size: 31px;
+  font-weight: 700;
+}
+
+
+.npc-name-input:focus {
+  border-bottom-color:
+    #5f5f5f;
+
+  outline: none;
+
+  box-shadow: none;
+}
+
+
+/* ========================================================= */
+/* SYMBOL                                                    */
+/* ========================================================= */
+
+.npc-symbol-button {
+  width: 72px;
+  height: 72px;
+
+  padding: 5px;
+
+  overflow: hidden;
+
+  background:
+    #5f5f5f;
+
+  border:
+    3px solid
+    rgba(
+      0,
+      0,
+      0,
+      0.28
+    );
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  box-shadow: none;
+}
+
+
+.npc-symbol-button:hover {
+  transform:
+    scale(1.05);
+
+  box-shadow: none;
+}
+
+
+.npc-symbol-button img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  border: none;
+
+  border-radius: 50%;
+}
+
+
+/* ========================================================= */
+/* INHALT                                                    */
+/* ========================================================= */
+
+.npc-content {
+  display: grid;
+
+  grid-template-columns:
+    230px 1fr;
+
+  gap: 24px;
+}
+
+
+/* ========================================================= */
+/* LINKE SPALTE                                              */
+/* ========================================================= */
+
+.npc-left-column {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 28px;
+}
+
+
+/* ========================================================= */
+/* PORTRAIT                                                  */
+/* ========================================================= */
+
+.npc-portrait-button {
+  position: relative;
+
+  width: 210px;
+  height: 245px;
+
+  margin:
+    0 auto;
+
+  padding: 0;
+
+  overflow: hidden;
+
+  background:
+    #777;
+
+  border:
+    3px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.72
+    );
+
+  border-radius: 18px;
+
+  cursor: pointer;
+
+  box-shadow: none;
+}
+
+
+.npc-portrait-button img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  border: none;
+}
+
+
+.npc-portrait-edit {
+  position: absolute;
+
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  padding:
+    8px 5px;
+
+  color: white;
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.68
+    );
+
+  font-size: 13px;
+
+  opacity: 0;
+
+  transition:
+    opacity 0.15s ease;
+}
+
+
+.npc-portrait-button:hover
+.npc-portrait-edit {
+  opacity: 1;
+}
+
+
+/* ========================================================= */
+/* HP                                                        */
+/* ========================================================= */
+
+.npc-hp-section {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 15px;
+
+  padding:
+    18px 12px;
+
+  color: #111;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.92
+    );
+
+  border-radius: 16px;
+}
+
+
+.npc-hp-section label {
+  font-size: 25px;
+  font-weight: 700;
+}
+
+
+.npc-hp-fields {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  font-size: 24px;
+}
+
+
+.npc-hp-fields input {
+  width: 65px;
+  height: 38px;
+
+  color: #111;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.80
+    );
+
+  border: none;
+
+  border-bottom:
+    2px solid #555;
+
+  border-radius: 0;
+
+  font-size: 21px;
+
+  text-align: center;
+}
+
+
+/* ========================================================= */
+/* FÄHIGKEITEN-SPALTE                                        */
+/* ========================================================= */
+
+.npc-abilities-column {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 22px;
+
+  padding: 18px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.90
+    );
+
+  border-radius: 20px;
+}
+
+
+/* ========================================================= */
+/* EINZELNE FÄHIGKEIT                                        */
+/* ========================================================= */
+
+.npc-ability {
+  padding:
+    15px;
+
+  background:
+    #fbf8f1;
+
+  border:
+    2px solid
+    rgba(
+      95,
+      95,
+      95,
+      0.36
+    );
+
+  border-radius: 18px;
+}
+
+
+/* ========================================================= */
+/* FÄHIGKEITSHEADER                                          */
+/* ========================================================= */
+
+.npc-ability-header {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-bottom: 10px;
+}
+
+
+/* ========================================================= */
+/* WÜRFELBUTTON                                              */
+/* ========================================================= */
+
+.npc-roll-button {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex: 0 0 34px;
+
+  width: 34px;
+  height: 34px;
+
+  padding: 0;
+
+  color: #444;
+
+  background:
+    transparent;
+
+  border:
+    1px solid transparent;
+
+  border-radius: 7px;
+
+  cursor: pointer;
+
+  box-shadow: none;
+}
+
+
+.npc-roll-button:hover {
+  color: #000;
+
+  background:
+    rgba(
+      95,
+      95,
+      95,
+      0.13
+    );
+
+  border-color:
+    rgba(
+      95,
+      95,
+      95,
+      0.30
+    );
+
+  box-shadow: none;
+}
+
+
+/* ========================================================= */
+/* FÄHIGKEITSNAME                                            */
+/* ========================================================= */
+
+.npc-ability-name {
+  flex: 1;
+
+  min-width: 0;
+
+  height: 37px;
+
+  padding:
+    0 5px;
+
+  color: #111;
+
+  background:
+    transparent;
+
+  border: none;
+
+  border-bottom:
+    2px solid
+    rgba(
+      0,
+      0,
+      0,
+      0.22
+    );
+
+  border-radius: 0;
+
+  font-size: 21px;
+  font-weight: 700;
+}
+
+
+.npc-ability-name:focus {
+  border-bottom-color:
+    #5f5f5f;
+
+  outline: none;
+
+  box-shadow: none;
+}
+
+
+/* ========================================================= */
+/* FÄHIGKEITSKREISE                                          */
+/* ========================================================= */
+
+.npc-ability-circles {
+  display: flex;
+
+  flex: 0 0 auto;
+
+  gap: 6px;
+}
+
+
+.npc-ability-circle {
+  width: 26px;
+  height: 26px;
+
+  padding: 0;
+
+  background: white;
+
+  border:
+    2px solid
+    #777;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.10s ease,
+    background 0.10s ease;
+
+  box-shadow: none;
+}
+
+
+.npc-ability-circle:hover {
+  transform:
+    scale(1.14);
+
+  box-shadow: none;
+}
+
+
+.npc-ability-circle.filled {
+  background:
+    #5f5f5f;
+
+  border-color:
+    #5f5f5f;
+}
+
+
+/* ========================================================= */
+/* BESCHREIBUNG                                              */
+/* ========================================================= */
+
+.npc-ability-description {
+  width: 100%;
+
+  min-height: 105px;
+
+  padding: 10px;
+
+  box-sizing: border-box;
+
+  resize: vertical;
+
+  color: #111;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.80
+    );
+
+  border:
+    2px solid
+    rgba(
+      0,
+      0,
+      0,
+      0.15
+    );
+
+  border-radius: 12px;
+
+  font-size: 16px;
+
+  line-height: 1.4;
+}
+
+
+.npc-ability-description:focus {
+  border-color:
+    #5f5f5f;
+
+  outline: none;
+
+  box-shadow: none;
+}
+
+
+/* ========================================================= */
+/* CHAT                                                      */
+/* ========================================================= */
+
+.farbmeister-npc-chat-roll strong {
+  font-weight: 700;
+}
