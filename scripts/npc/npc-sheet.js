@@ -596,15 +596,6 @@ export class FarbmeisterNPCSheet
   }
 
 
-  static async _actionChangeSymbol(
-    event,
-    target
-  ) {
-
-    await this._pickSymbol();
-  }
-
-
   /* ========================================================= */
   /* KREISE                                                    */
   /* ========================================================= */
@@ -994,47 +985,6 @@ export class FarbmeisterNPCSheet
 
 
             this.render();
-          }
-      });
-
-
-    await picker.render({
-      force: true
-    });
-  }
-
-
-  /* ========================================================= */
-  /* SYMBOL ÄNDERN                                             */
-  /* ========================================================= */
-
-  async _pickSymbol() {
-
-    const npc =
-      this._getNPCData();
-
-
-    const FilePicker =
-      foundry.applications.apps.FilePicker;
-
-
-    const picker =
-      new FilePicker({
-
-        type:
-          "image",
-
-        current:
-          npc.symbolImg,
-
-        callback:
-          async path => {
-
-            await this._updateNPCData({
-
-              symbolImg:
-                path
-            });
           }
       });
 

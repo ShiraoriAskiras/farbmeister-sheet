@@ -18,19 +18,15 @@
       >
 
 
-      <button
-        type="button"
-        class="npc-symbol-button"
-        data-action="change-symbol"
-        title="Symbol ändern"
-      >
+      {{!-- FESTES ICON OBEN RECHTS --}}
+      <div class="npc-symbol-fixed">
 
         <img
-          src="{{npc.symbolImg}}"
+          src="modules/farbmeister-sheet/assets/icons/Grau.png"
           alt="NPC Symbol"
         >
 
-      </button>
+      </div>
 
     </header>
 
@@ -125,12 +121,7 @@
           <section class="npc-ability">
 
 
-            {{!-- ------------------------------------------- --}}
-            {{!-- NAME + KREISE                              --}}
-            {{!-- ------------------------------------------- --}}
-
             <div class="npc-ability-header">
-
 
               <button
                 type="button"
@@ -139,9 +130,7 @@
                 data-ability="{{key}}"
                 title="{{name}} würfeln"
               >
-
                 <i class="fas fa-dice-d8"></i>
-
               </button>
 
 
@@ -188,11 +177,6 @@
             </div>
 
 
-
-            {{!-- ------------------------------------------- --}}
-            {{!-- BESCHREIBUNG                               --}}
-            {{!-- ------------------------------------------- --}}
-
             {{#if @first}}
 
               <textarea
@@ -214,7 +198,6 @@
           </section>
 
         {{/each}}
-
 
       </div>
 

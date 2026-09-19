@@ -3,38 +3,50 @@ import {
 } from "./npc-sheet.js";
 
 
-Hooks.once(
-  "init",
-  () => {
+Hooks.once("init", () => {
 
-    console.log(
-      "Farbmeister NPC Sheet | Initialisierung"
-    );
+  console.log(
+    "Farbmeister NPC Sheet | Initialisierung"
+  );
 
 
-    const DocumentSheetConfig =
-      foundry.applications.apps.DocumentSheetConfig;
+  const DocumentSheetConfig =
+    foundry.applications.apps.DocumentSheetConfig;
 
 
-    DocumentSheetConfig.registerSheet(
-      foundry.documents.Actor,
-      "farbmeister-npc-sheet",
-      FarbmeisterNPCSheet,
-      {
-        label:
-          "Farbmeister NPC Sheet",
+  DocumentSheetConfig.registerSheet(
+    foundry.documents.Actor,
 
-        makeDefault:
-          false,
+    /*
+     * WICHTIG:
+     * Hier muss die ID unseres tatsächlichen
+     * Moduls stehen.
+     */
+    "farbmeister-sheet",
 
-        canConfigure:
-          true
-      }
-    );
+    FarbmeisterNPCSheet,
+
+    {
+      label:
+        "Farbmeister NPC Sheet",
+
+      /*
+       * Nicht automatisch alle Actors übernehmen.
+       */
+      makeDefault:
+        false,
+
+      /*
+       * Soll vom Benutzer in der
+       * Sheet-Konfiguration auswählbar sein.
+       */
+      canConfigure:
+        true
+    }
+  );
 
 
-    console.log(
-      "Farbmeister NPC Sheet | Registriert"
-    );
-  }
-);
+  console.log(
+    "Farbmeister NPC Sheet | Erfolgreich registriert"
+  );
+});
