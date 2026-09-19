@@ -75,7 +75,13 @@
 
           <select
             name="color"
+            class="color-select"
           >
+
+            <button type="button" class="selected-color">
+              <selectedcontent></selectedcontent>
+            </button>
+
 
             {{#each colors}}
 
@@ -83,7 +89,8 @@
                 value="{{key}}"
                 {{#if selected}}selected{{/if}}
               >
-                {{icon}} {{label}}
+                <img src="{{icon}}" alt="">
+                <span>{{label}}</span>
               </option>
 
             {{/each}}

@@ -251,6 +251,9 @@ export class FarbmeisterActorSheet
 
           icon:
             color.icon,
+          
+          emoji:
+            color.emoji,
 
           selected:
             key === character.color
