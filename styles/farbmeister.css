@@ -7,6 +7,7 @@
   --farbmeister-border-radius: 8px;
   --farbmeister-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
   --farbmeister-border-color: #ebebeb;
+  --farbmeister-type-color: #ffffff;
 }
 
 /* ========================================================= */
@@ -153,6 +154,7 @@
 
 
 .farbmeister-box {
+  min-height: 120px;
   padding: 25px;
 }
 
@@ -163,13 +165,12 @@
 
 .name-box {
   text-align: center;
+  border: 8px solid var(--farbmeister-border-color);
 }
 
 
 .name-box label {
   display: block;
-
-  margin-bottom: 14px;
 
   font-size: 32px;
   font-weight: 600;
@@ -206,6 +207,7 @@
   display: flex;
 
   flex-direction: column;
+  border: 8px solid var(--farbmeister-border-color);
 }
 
 
@@ -220,12 +222,10 @@
 .character-box select {
   width: 80%;
 
-  margin:
-    0 auto 55px auto;
-
   color: #111;
 
   background: var(--farbmeister-background);
+  border: 1px solid #111;
 
   font-size: 22px;
 }
@@ -354,14 +354,12 @@
 
   gap: 20px;
 
-  min-height: 120px;
+  min-height: 138px;
 
   padding:
     15px 25px;
 
-  border:
-    4px solid
-    var(--farbmeister-accent);
+  border: 8px solid var(--farbmeister-type-color);
 }
 
 
@@ -403,9 +401,7 @@
   padding:
     22px 28px;
 
-  border:
-    4px solid
-    var(--farbmeister-accent);
+  border: 8px solid var(--farbmeister-type-color);
 }
 
 
