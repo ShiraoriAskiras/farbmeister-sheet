@@ -214,7 +214,7 @@ export class FarbmeisterNPCSheet
 
       circles:
         this._createCircles(
-          5,
+          10,
           npc.abilities.first.value
         )
     };
@@ -232,7 +232,7 @@ export class FarbmeisterNPCSheet
 
       circles:
         this._createCircles(
-          5,
+          10,
           npc.abilities.second.value
         )
     };
@@ -837,7 +837,7 @@ export class FarbmeisterNPCSheet
       Math.max(
         0,
         Math.min(
-          5,
+          10,
           Number(value) || 0
         )
       );
@@ -915,6 +915,17 @@ export class FarbmeisterNPCSheet
         "Fähigkeit"
       );
 
+    const safeDescription =
+     foundry.utils
+      .escapeHTML(
+      ability.description ||
+      ""
+    )
+    .replace(
+      /\n/g,
+      "<br>"
+    );
+
 
     /*
      * Auch NPCs würfeln:
@@ -939,18 +950,28 @@ export class FarbmeisterNPCSheet
         }),
 
       flavor: `
-        <div class="farbmeister-npc-chat-roll">
+  <div class="farbmeister-npc-chat-roll">
 
-          <strong>
-            ${safeName}
-          </strong>
+    <strong>
+      ${safeName}
+    </strong>
 
-          <br>
+    ${
+      safeDescription
+        ? `
+          <div class="farbmeister-npc-chat-description">
+            ${safeDescription}
+          </div>
+        `
+        : ""
+    }
 
-          Fähigkeit: +${bonus}
+    <div class="farbmeister-npc-chat-bonus">
+      Fähigkeit: +${bonus}
+    </div>
 
-        </div>
-      `
+  </div>
+`
     });
   }
 
