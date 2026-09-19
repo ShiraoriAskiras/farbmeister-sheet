@@ -18,5 +18,12 @@
 
   "styles": [
     "styles/farbmeister.css"
-  ]
+  ],
+
+  "documentTypes": {
+    "Item": {
+      "gegenstand": {}
+    }
+  }
+
 }

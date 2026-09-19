@@ -3,6 +3,7 @@ import {
   FARBMISTER_DEFAULTS
 } from "./config.js";
 
+import { FARBMEISTER_ITEM_TYPE } from "./main.js";
 
 const { HandlebarsApplicationMixin, DialogV2 } =
   foundry.applications.api;
@@ -884,6 +885,73 @@ export class FarbmeisterActorSheet
         }
       }
     );
+
+     /* ======================================================= */
+    /* Drag & Drop                                 */
+    /* ======================================================= */
+
+    const panel =
+    root.querySelector(".inventory-panel");
+
+
+    panel?.addEventListener(
+      "dragover",
+      event => event.preventDefault()
+    );
+
+
+    panel?.addEventListener(
+      "drop",
+      async event => {
+
+        event.preventDefault();
+
+
+        const TextEditor =
+          foundry.applications.ux.TextEditor.implementation;
+
+
+        const data =
+          TextEditor.getDragEventData(event);
+
+
+        if (data?.type !== "Item") return;
+
+
+        const item =
+          await Item.implementation.fromDropData(data);
+
+
+        if (!item) return;
+        if (item.parent === this.actor) return;
+
+
+        const slotElement =
+          event.target.closest("[data-slot]");
+
+
+        const payload = item.toObject();
+
+
+        payload.type = FARBMEISTER_ITEM_TYPE;
+
+        payload.system = {
+          ...payload.system,
+          container:
+            slotElement?.dataset.container ?? null,
+          slot:
+            slotElement
+              ? Number(slotElement.dataset.slot)
+              : null
+        };
+
+
+        await this.actor.createEmbeddedDocuments(
+          "Item",
+          [payload]
+        );
+      }
+    );
   }
 
 
@@ -1090,23 +1158,21 @@ export class FarbmeisterActorSheet
 
   _getInventory() {
 
-    const character =
-      this.actor.getFlag(
-        "farbmeister-sheet",
-        "character"
-      ) ?? {};
-
-
-    return this
-      ._normalizeInventory(
-        character.inventory
-      )
-      .map(
-        item => ({
-          ...item
-        })
-      );
-  }
+  return this.actor.items
+    .filter(
+      item =>
+        item.type === FARBMEISTER_ITEM_TYPE
+    )
+    .map(item => ({
+      id: item.id,
+      name: item.name,
+      img: item.img,
+      description: item.system.description ?? "",
+      quantity: item.system.quantity ?? 1,
+      container: item.system.container ?? null,
+      slot: item.system.slot ?? null
+    }));
+}
 
 
   /* ========================================================= */
@@ -1205,560 +1271,80 @@ async _openInventoryItemDialog({
   slot = null
 } = {}) {
 
-  const inventory =
-    this._getInventory();
-
-
   /*
-   * Prüfen, ob wir einen bestehenden
-   * Gegenstand bearbeiten.
+   * Bestehenden Gegenstand öffnen.
    */
-  const existingItem =
-    itemId
-      ? inventory.find(
-          item => item.id === itemId
-        )
-      : null;
+  if (itemId) {
 
+    const item =
+      this.actor.items.get(itemId);
 
-  /*
-   * Bei einem neuen Item prüfen,
-   * ob der Slot gültig und frei ist.
-   */
-  if (!existingItem) {
+    item?.sheet.render(true);
 
-    if (
-      !this._isValidSlot(
-        container,
-        slot
-      )
-    ) {
-
-      ui.notifications.warn(
-        "Ungültiger Inventarslot."
-      );
-
-      return;
-    }
-
-
-    const occupied =
-      inventory.some(
-        item =>
-          item.container === container &&
-          item.slot === Number(slot)
-      );
-
-
-    if (occupied) {
-
-      ui.notifications.warn(
-        "Dieser Inventarslot ist bereits belegt."
-      );
-
-      return;
-    }
+    return;
   }
 
 
   /*
-   * Bestehendes oder neues Item.
+   * Neuen Gegenstand im Slot anlegen.
    */
-  const item =
-    existingItem ?? {
+  if (!this._isValidSlot(container, slot)) {
 
-      id:
-        foundry.utils.randomID(),
+    ui.notifications.warn(
+      "Ungültiger Inventarslot."
+    );
 
-      container,
-
-      slot:
-        Number(slot),
-
-      name:
-        "",
-
-      quantity:
-        1,
-
-      description:
-        "",
-
-      img:
-        "icons/svg/item-bag.svg"
-    };
+    return;
+  }
 
 
-  /*
-   * HTML-sichere Werte.
-   */
-  const safeName =
-    foundry.utils.escapeHTML(
-      item.name ?? ""
+  const occupied =
+    this._getInventory().some(
+      item =>
+        item.container === container &&
+        item.slot === Number(slot)
     );
 
 
-  const safeDescription =
-    foundry.utils.escapeHTML(
-      item.description ?? ""
+  if (occupied) {
+
+    ui.notifications.warn(
+      "Dieser Inventarslot ist bereits belegt."
     );
 
-
-  const safeImage =
-    foundry.utils.escapeHTML(
-      item.img ??
-      "icons/svg/item-bag.svg"
-    );
-
-
-  const slotLabel =
-    this._getSlotLabel(
-      item.container,
-      item.slot
-    );
-
-
-  /*
-   * Dialog-Inhalt.
-   */
-  const content = `
-
-    <div class="farbmeister-item-dialog">
-
-      <div class="item-dialog-location">
-        ${slotLabel}
-      </div>
-
-
-      <div class="item-dialog-image-row">
-
-        <img
-          class="item-dialog-preview"
-          src="${safeImage}"
-          alt=""
-        >
-
-
-        <div class="item-dialog-image-controls">
-
-          <label>
-            Bild
-          </label>
-
-
-          <div class="item-dialog-image-input">
-
-            <input
-              type="text"
-              name="img"
-              value="${safeImage}"
-            >
-
-
-            <button
-              type="button"
-              data-browse-image
-              title="Bild auswählen"
-            >
-              <i class="fas fa-folder-open"></i>
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label>
-          Name
-        </label>
-
-        <input
-          type="text"
-          name="itemName"
-          value="${safeName}"
-          placeholder="Gegenstand"
-          autofocus
-        >
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label>
-          Menge
-        </label>
-
-        <input
-          type="number"
-          name="quantity"
-          min="1"
-          step="1"
-          value="${Math.max(
-            1,
-            Number(item.quantity ?? 1)
-          )}"
-        >
-
-      </div>
-
-
-      <div class="form-group stacked">
-
-        <label>
-          Beschreibung
-        </label>
-
-        <textarea
-          name="description"
-          rows="5"
-          placeholder="Beschreibung des Gegenstands..."
-        >${safeDescription}</textarea>
-
-      </div>
-
-    </div>
-  `;
-
-
-  /*
-   * Dialog öffnen.
-   *
-   * Wir benutzen prompt und lesen die Werte
-   * direkt aus dem Formular aus.
-   */
-  const result =
-    await DialogV2.prompt({
-
-      window: {
-
-        title:
-          existingItem
-            ? "Gegenstand bearbeiten"
-            : "Gegenstand hinzufügen"
-      },
-
-
-      content,
-
-
-      modal:
-        true,
-
-
-      rejectClose:
-        false,
-
-
-      ok: {
-
-        label:
-          existingItem
-            ? "Speichern"
-            : "Hinzufügen",
-
-        icon:
-          "fas fa-save",
-
-
-        /*
-         * Das hier ist entscheidend:
-         * Wir geben unsere eigenen Daten zurück.
-         */
-        callback:
-          (event, button, dialog) => {
-
-            const form =
-              button.form;
-
-
-            return {
-
-              name:
-                form.elements.itemName
-                  .value
-                  .trim(),
-
-
-              quantity:
-                Math.max(
-                  1,
-                  Number(
-                    form.elements.quantity.value
-                  ) || 1
-                ),
-
-
-              description:
-                form.elements.description
-                  .value,
-
-
-              img:
-                form.elements.img
-                  .value
-                  .trim()
-            };
-          }
-      },
-
-
-      /*
-       * Bildbrowser aktivieren.
-       */
-      render:
-        (event, dialog) => {
-
-          const dialogRoot =
-            dialog.element;
-
-
-          const browseButton =
-            dialogRoot.querySelector(
-              "[data-browse-image]"
-            );
-
-
-          const imageInput =
-            dialogRoot.querySelector(
-              "input[name='img']"
-            );
-
-
-          const preview =
-            dialogRoot.querySelector(
-              ".item-dialog-preview"
-            );
-
-
-          /*
-           * Manuell geänderten Bildpfad
-           * direkt in der Vorschau anzeigen.
-           */
-          imageInput
-            ?.addEventListener(
-              "change",
-              () => {
-
-                if (
-                  preview &&
-                  imageInput.value
-                ) {
-
-                  preview.src =
-                    imageInput.value;
-                }
-              }
-            );
-
-
-          /*
-           * Foundry FilePicker.
-           */
-          browseButton
-            ?.addEventListener(
-              "click",
-              async browseEvent => {
-
-                browseEvent.preventDefault();
-
-
-                const FilePicker =
-                  foundry.applications.apps.FilePicker;
-
-
-                const picker =
-                  new FilePicker({
-
-                    type:
-                      "image",
-
-                    current:
-                      imageInput?.value ||
-                      "icons/svg/item-bag.svg",
-
-                    callback:
-                      path => {
-
-                        if (imageInput) {
-
-                          imageInput.value =
-                            path;
-                        }
-
-
-                        if (preview) {
-
-                          preview.src =
-                            path;
-                        }
-                      }
-                  });
-
-
-                await picker.render({
-                  force: true
-                });
-              }
-            );
+    return;
+  }
+
+
+  const [created] =
+    await this.actor.createEmbeddedDocuments(
+      "Item",
+      [{
+        name: "Neuer Gegenstand",
+        type: FARBMEISTER_ITEM_TYPE,
+        img: "icons/svg/item-bag.svg",
+        system: {
+          container,
+          slot: Number(slot)
         }
-    });
-
-
-  /*
-   * Abbrechen / X
-   */
-  if (!result) {
-    return;
-  }
-
-
-  /*
-   * Werte bereinigen.
-   */
-  const name =
-    result.name ||
-    "Gegenstand";
-
-
-  const quantity =
-    Math.max(
-      1,
-      Number(result.quantity) || 1
+      }]
     );
 
 
-  const description =
-    result.description ?? "";
-
-
-  const img =
-    result.img ||
-    "icons/svg/item-bag.svg";
-
-
-  /*
-   * BESTEHENDES ITEM BEARBEITEN
-   */
-  if (existingItem) {
-
-    existingItem.name =
-      name;
-
-    existingItem.quantity =
-      quantity;
-
-    existingItem.description =
-      description;
-
-    existingItem.img =
-      img;
-
-
-    await this._saveInventory(
-      inventory
-    );
-
-
-    return;
-  }
-
-
-  /*
-   * NEUES ITEM ANLEGEN
-   */
-  inventory.push({
-
-    id:
-      item.id,
-
-    container:
-      item.container,
-
-    slot:
-      item.slot,
-
-    name,
-
-    quantity,
-
-    description,
-
-    img
-  });
-
-
-  await this._saveInventory(
-    inventory
-  );
+  created?.sheet.render(true);
 }
 
   /* ========================================================= */
   /* ITEM LÖSCHEN                                              */
   /* ========================================================= */
 
-  async _confirmDeleteInventoryItem(
-    itemId
-  ) {
+  async _confirmDeleteInventoryItem(itemId) {
 
-    const inventory =
-      this._getInventory();
+  const item =
+    this.actor.items.get(itemId);
 
-
-    const item =
-      inventory.find(
-        entry =>
-          entry.id === itemId
-      );
-
-
-    if (!item) {
-      return;
-    }
-
-
-    const safeName =
-      foundry.utils.escapeHTML(
-        item.name
-      );
-
-
-    const confirmed =
-      await DialogV2.confirm({
-
-        window: {
-          title:
-            "Gegenstand löschen"
-        },
-
-        content: `
-          <p>
-            Soll <strong>${safeName}</strong>
-            wirklich aus dem Inventar entfernt werden?
-          </p>
-        `,
-
-        modal:
-          true,
-
-        rejectClose:
-          false
-      });
-
-
-    if (!confirmed) {
-      return;
-    }
-
-
-    await this._deleteInventoryItem(
-      itemId
-    );
-  }
+  await item?.deleteDialog();
+}
 
 
   async _deleteInventoryItem(
@@ -1787,119 +1373,8 @@ async _openInventoryItemDialog({
   async _postInventoryItemToChat(
     itemId
   ) {
-
-    const inventory =
-      this._getInventory();
-
-
-    const item =
-      inventory.find(
-        entry =>
-          entry.id === itemId
-      );
-
-
-    if (!item) {
-      return;
-    }
-
-
-    const safeName =
-      foundry.utils.escapeHTML(
-        item.name ||
-        "Gegenstand"
-      );
-
-
-    const safeDescription =
-      foundry.utils
-        .escapeHTML(
-          item.description ||
-          ""
-        )
-        .replace(
-          /\n/g,
-          "<br>"
-        );
-
-
-    const safeImage =
-      foundry.utils.escapeHTML(
-        item.img ||
-        "icons/svg/item-bag.svg"
-      );
-
-
-    const quantity =
-      Math.max(
-        1,
-        Number(
-          item.quantity ?? 1
-        )
-      );
-
-
-    await ChatMessage.create({
-
-      speaker:
-        ChatMessage.getSpeaker({
-          actor:
-            this.actor
-        }),
-
-      content: `
-
-        <div class="farbmeister-chat-item">
-
-          <div style="
-            display:flex;
-            align-items:center;
-            gap:10px;
-          ">
-
-            <img
-              src="${safeImage}"
-              alt="${safeName}"
-              style="
-                width:48px;
-                height:48px;
-                object-fit:cover;
-                border:0;
-              "
-            >
-
-            <div>
-
-              <strong
-                style="
-                  font-size:1.15em;
-                "
-              >
-                ${safeName}
-              </strong>
-
-              <div>
-                Menge: ${quantity}
-              </div>
-
-            </div>
-
-          </div>
-
-
-          ${
-            safeDescription
-              ? `
-                <p>
-                  ${safeDescription}
-                </p>
-              `
-              : ""
-          }
-
-        </div>
-      `
-    });
+    const item = this.actor.items.get(itemId);
+    if (!item) return;
   }
 
 
