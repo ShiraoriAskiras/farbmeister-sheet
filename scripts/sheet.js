@@ -1,5 +1,5 @@
 import {
-  FARBMISTER_COLORS,
+  FARBMEISTER_COLORS,
   FARBMISTER_DEFAULTS
 } from "./config.js";
 
@@ -232,15 +232,15 @@ export class FarbmeisterActorSheet
 
 
     const selectedColor =
-      FARBMISTER_COLORS[
+      FARBMEISTER_COLORS[
         character.color
       ] ??
-      FARBMISTER_COLORS.red;
+      FARBMEISTER_COLORS.red;
 
 
     const colors =
       Object.entries(
-        FARBMISTER_COLORS
+        FARBMEISTER_COLORS
       ).map(
         ([key, color]) => ({
 
@@ -921,10 +921,10 @@ export class FarbmeisterActorSheet
 
 
     const color =
-      FARBMISTER_COLORS[
+      FARBMEISTER_COLORS[
         colorKey
       ] ??
-      FARBMISTER_COLORS.red;
+      FARBMEISTER_COLORS.red;
 
 
     const ability =

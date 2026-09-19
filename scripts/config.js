@@ -1,4 +1,4 @@
-export const FARBMISTER_COLORS = {
+export const FARBMEISTER_COLORS = {
   red: {
     label: "Rot",
     magic: "Feuer Magie",
