@@ -1244,7 +1244,7 @@
 }
 
 .farbmeister-item-body {
-  --farbmeister-accent: #8a6a3a;
+  --farbmeister-accent: #ebebeb;
 
   height: 100%;
   padding: 30px;
@@ -1252,15 +1252,11 @@
 
   color: #111;
 
-  background:
-    linear-gradient(
-      110deg,
-      rgba(90, 190, 230, 0.28),
-      rgba(150, 210, 80, 0.20),
-      rgba(255, 210, 50, 0.25),
-      rgba(255, 110, 40, 0.22),
-      rgba(80, 180, 230, 0.22)
-    );
+   background-image:
+    url("/modules/farbmeister-sheet/assets/backgrounds/farbmeister-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .item-panel {
@@ -1272,9 +1268,9 @@
   padding: 25px;
   box-sizing: border-box;
 
-  background: rgba(255, 255, 255, 0.94);
+  background: #FBF8F1;
 
-  border: 4px solid var(--farbmeister-accent);
+  border: 8px solid var(--farbmeister-accent);
   border-radius: 18px;
 }
 
@@ -1308,7 +1304,7 @@
   padding: 6px;
   box-sizing: border-box;
   object-fit: contain;
-  background: white;
+  background: #FFFFFF;
   border: 2px solid #333;
   border-radius: 12px;
   cursor: pointer;
@@ -1351,4 +1347,5 @@
   width: 80px;
   text-align: center;
   color: #111;
+  background: #FBF8F1;
 }
